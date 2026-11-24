@@ -349,7 +349,7 @@ HOME = {
          "zéro participant oublié.", "des images dont vous serez fiers."],
     lead="Inscriptions en ligne, billetterie MonCash / NatCash, confirmations WhatsApp, pointage à l’entrée, couverture photo & vidéo et rapport final. Une seule équipe s’occupe de tout, avant, pendant et après.",
     ctaWa="Écrivez-nous sur WhatsApp", ctaForm="Demander un devis", ctaHow="Voir comment ça marche",
-    reel="[ Showreel vidéo 30–60 s ]", reelLabel="Showreel BiZ Media",
+    reel="[ Showreel vidéo 30–60 s ]", reelLabel="Showreel BiZ Media", fWa="Inscription confirmée", fWaSub="Envoyé sur WhatsApp", fLive="présents", fLiveSub="en direct", fTk="Billet validé", fTkSub="VIP · Entrée 1",
     trust="Système déjà utilisé pour Bwat Sekrèm Talks",
     trustStats=[("374", "inscrits"), ("188", "présents pointés"), ("675", "messages envoyés")],
     howEyebrow="Comment ça marche", howTitle="Vous organisez. Nous gérons le reste.",
@@ -395,7 +395,7 @@ HOME = {
          "no attendee left behind.", "images you’ll be proud of."],
     lead="Online registration, MonCash / NatCash ticketing, WhatsApp confirmations, check-in at the door, photo & video coverage and a final report. One team handles it all, before, during and after.",
     ctaWa="Message us on WhatsApp", ctaForm="Get a quote", ctaHow="See how it works",
-    reel="[ Video showreel 30–60 s ]", reelLabel="BiZ Media showreel",
+    reel="[ Video showreel 30–60 s ]", reelLabel="BiZ Media showreel", fWa="Registration confirmed", fWaSub="Sent on WhatsApp", fLive="checked in", fLiveSub="live", fTk="Ticket validated", fTkSub="VIP · Door 1",
     trust="System already used for Bwat Sekrèm Talks",
     trustStats=[("374", "registered"), ("188", "checked in"), ("675", "messages sent")],
     howEyebrow="How it works", howTitle="You host. We handle the rest.",
@@ -509,13 +509,19 @@ def home(lang):
     body = f'''<section class="hero" id="top">
 <div class="wrap">
 <div class="col">
-<div class="eyebrow" lang="en">{e(h["eyebrow"])}</div>
-<h1>{e(h["h1a"])} <span class="sr-only">{e(" ".join(h["rot"]))}</span><span class="rot" aria-hidden="true">{"".join(f'<span class="rot-i{" on" if i == 0 else ""}">{e(x)}</span>' for i, x in enumerate(h["rot"]))}</span></h1>
+<div class="eyebrow rec" lang="en"><span class="rec-dot" aria-hidden="true"></span>{e(h["eyebrow"])}</div>
+<h1>{e(h["h1a"])} <span class="sr-only">{e(" ".join(h["rot"]))}</span><span class="rot" aria-hidden="true">{"".join(f'<span class="rot-i{" on" if i == 0 else ""}"><span>{e(x)}</span></span>' for i, x in enumerate(h["rot"]))}</span></h1>
 <p class="lead">{e(h["lead"])}</p>
 <div class="actions">{cta_main}<a class="btn btn-ghost" href="#comment">{e(h["ctaHow"])}</a></div>
 </div>
 <div class="col reel-col">
+<div class="stage">
+<span class="sun" aria-hidden="true"></span><span class="dots-bg" aria-hidden="true"></span>
 <div class="reel"><video autoplay muted loop playsinline preload="metadata" poster="{root_of(me)}assets/img/bst-certificats.jpg" aria-label="{e(h["reelLabel"])}"><source src="{root_of(me)}assets/showreel.mp4" type="video/mp4"></video></div>
+<div class="float f-wa" aria-hidden="true"><span class="f-ico wa">{WA_ICON}</span><span><b>{e(h["fWa"])}</b><small>{e(h["fWaSub"])}</small></span></div>
+<div class="float f-live" aria-hidden="true"><b>188</b><span><i></i>{e(h["fLive"])} · {e(h["fLiveSub"])}</span></div>
+<div class="float f-tk" aria-hidden="true"><span class="f-qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span><b>{e(h["fTk"])}</b><small>{e(h["fTkSub"])}</small></span><span class="f-ok">✓</span></div>
+</div>
 </div>
 </div>
 <div class="wrap trust"><span>{e(h["trust"])}</span><ul>{trust}</ul></div>
