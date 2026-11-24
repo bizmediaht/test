@@ -440,3 +440,16 @@ footer .note{flex-basis:100%;font-size:12px;color:#94A3B8}
 .organizer img{width:40px;height:40px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line)}
 .q-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .pay.free{background:#ECFDF5;border-color:#A7F3D0;color:#065F46;font-weight:700;margin:0}
+.adm-bar .actions{margin:0}
+.tbl-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px}
+.crm{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+.crm th{background:var(--bg);text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--slate);padding:10px 12px;white-space:nowrap;position:sticky;top:0}
+.crm td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+.crm tr:hover td{background:#FFFBEB}
+.prof-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.prof-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.prof-card h3{font-size:17px}
+.hb.light .hb-l{color:#334155}.hb.light .hb-v{color:var(--navy);font-size:14px}
+.hb.light .hb-track{background:#F1F5F9}.hb.light .hb-fill{background:var(--gold)}
+.prof-group{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
+.prof-title{font-size:20px}

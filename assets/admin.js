@@ -87,16 +87,19 @@
     state.event = state.event || evs.data[0].id;
     var sel = h('select', { 'aria-label': 'Événement', onchange: function () { state.event = sel.value; render(); } },
       evs.data.map(function (e) { return h('option', { value: e.id, selected: e.id === state.event, text: (e.organizations ? e.organizations.name + ' · ' : '') + e.title + ' — ' + when(e.starts_at) }); }));
-    var tabs = h('div', { class: 'tabs', role: 'tablist' }, [['pending', 'À vérifier'], ['paid', 'Payées'], ['rejected', 'Refusées']].map(function (t) {
+    var tabs = h('div', { class: 'tabs', role: 'tablist' }, [['pending', 'À vérifier'], ['paid', 'Payées'], ['rejected', 'Refusées'], ['people', 'Participants'], ['profile', 'Profil']].map(function (t) {
       return h('button', { type: 'button', role: 'tab', 'aria-selected': String(state.status === t[0]), 'data-s': t[0], text: t[1], onclick: function () { state.status = t[0]; render(); } });
     }));
     var stats = h('div', { class: 'adm-stats' }); var list = h('div', { class: 'orders' });
-    app.replaceChildren(h('div', { class: 'adm-bar' }, [sel, h('a', { class: 'btn btn-gold', href: 'scan/', text: 'Scanner les billets' })]), stats, tabs, list);
+    var csvBtn = h('button', { class: 'btn btn-ghost-dark', type: 'button', text: 'Exporter (CSV)', onclick: function () { exportCsv(); } });
+    app.replaceChildren(h('div', { class: 'adm-bar' }, [sel, h('div', { class: 'actions' }, [csvBtn, h('a', { class: 'btn btn-gold', href: 'scan/', text: 'Scanner les billets' })])]), stats, tabs, list);
+    var cache = { orders: [], byOrder: {}, questions: [] };
+    cacheRef = function () { return cache; };
 
     async function render() {
       tabs.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-selected', String(b.getAttribute('data-s') === state.status)); });
       list.replaceChildren(h('p', { class: 'note', text: 'Chargement…' }));
-      var all = await sb.from('orders').select('id, status, quantity, amount_htg, buyer_name, buyer_phone, payment_method, payment_ref, proof_path, reject_reason, created_at, ticket_types(name), events(title, starts_at)').eq('event_id', state.event).order('created_at', { ascending: false });
+      var all = await sb.from('orders').select('id, status, quantity, amount_htg, buyer_name, buyer_phone, buyer_email, consent_biz, answers, payment_method, payment_ref, proof_path, reject_reason, created_at, ticket_type_id, ticket_types(name, questions), events(title, starts_at, questions)').eq('event_id', state.event).order('created_at', { ascending: false });
       var tk = await sb.from('tickets').select('order_id, code, checked_in_at').eq('event_id', state.event);
       if (all.error) { list.replaceChildren(h('p', { class: 'note err', text: all.error.message })); return; }
       var byOrder = {}; (tk.data || []).forEach(function (t) { (byOrder[t.order_id] = byOrder[t.order_id] || []).push(t); });
@@ -105,15 +108,104 @@
       var cash = paid.reduce(function (s, o) { return s + o.amount_htg; }, 0);
       var pend = all.data.filter(function (o) { return o.status === 'pending'; }).length;
       var inn = (tk.data || []).filter(function (t) { return t.checked_in_at; }).length;
-      stats.replaceChildren.apply(stats, [['Billets vendus', sold], ['Encaissé', money(cash)], ['À vérifier', pend], ['Entrées pointées', inn + ' / ' + sold]].map(function (s) {
+      stats.replaceChildren.apply(stats, [['Billets émis', sold], ['Encaissé', money(cash)], ['À vérifier', pend], ['Entrées pointées', inn + ' / ' + sold]].map(function (s) {
         return h('div', null, [h('b', { text: String(s[1]) }), h('span', { text: s[0] })]);
       }));
+      cache.orders = all.data; cache.byOrder = byOrder; cache.questions = questionsOf(all.data);
+      if (state.status === 'people') return peopleView(list, cache);
+      if (state.status === 'profile') return profileView(list, cache);
       var rows = all.data.filter(function (o) { return o.status === state.status; });
       if (!rows.length) { list.replaceChildren(h('p', { class: 'note', text: 'Aucune commande ici.' })); return; }
       list.replaceChildren.apply(list, rows.map(function (o) { return orderCard(o, byOrder[o.id] || [], render); }));
     }
     render();
   }
+
+  /* ---------- CRM : participants, profil, export ---------- */
+  function questionsOf(orders) {
+    var seen = {}, out = [];
+    orders.forEach(function (o) {
+      var qs = (o.ticket_types && o.ticket_types.questions) || (o.events && o.events.questions) || [];
+      qs.forEach(function (q) { if (!seen[q.id]) { seen[q.id] = 1; out.push(q); } });
+    });
+    return out;
+  }
+  function confirmed(c) { return c.orders.filter(function (o) { return o.status === 'paid'; }); }
+  function present(c, o) { return (c.byOrder[o.id] || []).some(function (t) { return t.checked_in_at; }); }
+
+  function peopleView(list, c) {
+    var rows = confirmed(c);
+    var search = h('input', { type: 'search', placeholder: 'Rechercher un nom, un téléphone, une réponse…', 'aria-label': 'Rechercher' });
+    var typeSel = h('select', { 'aria-label': 'Type de billet' }, [h('option', { value: '', text: 'Tous les billets' })].concat(
+      Array.from(new Set(rows.map(function (o) { return o.ticket_types.name; }))).map(function (n) { return h('option', { value: n, text: n }); })));
+    var count = h('p', { class: 'note' });
+    var wrap = h('div', { class: 'tbl-wrap' });
+    function draw() {
+      var term = search.value.trim().toLowerCase(), ty = typeSel.value;
+      var f = rows.filter(function (o) {
+        if (ty && o.ticket_types.name !== ty) return false;
+        if (!term) return true;
+        return [o.buyer_name, o.buyer_phone, o.buyer_email || ''].concat(Object.values(o.answers || {})).join(' ').toLowerCase().indexOf(term) >= 0;
+      });
+      count.textContent = f.length + ' participant(s) · ' + f.filter(function (o) { return present(c, o); }).length + ' présent(s) le jour J';
+      var qs = c.questions;
+      wrap.replaceChildren(h('table', { class: 'crm' }, [
+        h('thead', null, [h('tr', null, ['Nom', 'Téléphone', 'Billet'].concat(qs.map(function (q) { return q.label; }), ['Présent', 'Contact BiZ']).map(function (t) { return h('th', { text: t }); }))]),
+        h('tbody', null, f.map(function (o) {
+          return h('tr', null, [o.buyer_name, o.buyer_phone, o.quantity + ' × ' + o.ticket_types.name].concat(
+            qs.map(function (q) { return (o.answers || {})[q.id] || ''; }), [present(c, o) ? '✓' : '', o.consent_biz ? 'oui' : 'non']
+          ).map(function (v) { return h('td', { text: String(v) }); }));
+        }))
+      ]));
+    }
+    search.addEventListener('input', draw); typeSel.addEventListener('change', draw);
+    list.replaceChildren(h('div', { class: 'adm-bar' }, [search, typeSel]), count, wrap);
+    draw();
+  }
+
+  function profileView(list, c) {
+    var rows = confirmed(c);
+    var groups = {};
+    rows.forEach(function (o) { var n = o.ticket_types.name; (groups[n] = groups[n] || { qs: (o.ticket_types.questions || (o.events && o.events.questions) || []), rows: [] }).rows.push(o); });
+    var names = Object.keys(groups);
+    if (!names.length) { list.replaceChildren(h('p', { class: 'note', text: 'Pas encore de participants confirmés.' })); return; }
+    list.replaceChildren.apply(list, names.map(function (name) {
+      var g = groups[name];
+      var cards = g.qs.filter(function (q) { return q.type === 'select'; }).map(function (q) {
+        var who = g.rows.filter(function (o) { return (o.answers || {})[q.id]; });
+        if (!who.length) return null;
+        var counts = {}; who.forEach(function (o) { var v = o.answers[q.id]; counts[v] = (counts[v] || 0) + 1; });
+        var items = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+        return h('section', { class: 'prof-card' }, [
+          h('h3', { text: q.label }), h('p', { class: 'note', text: who.length + ' réponse(s)' }),
+          h('div', { class: 'hbars' }, items.map(function (k) {
+            var pc = Math.round(100 * counts[k] / who.length);
+            return h('div', { class: 'hb sm light' }, [h('span', { class: 'hb-l', text: k }),
+              h('span', { class: 'hb-track' }, [h('span', { class: 'hb-fill', style: 'width:' + pc + '%' })]),
+              h('b', { class: 'hb-v', text: counts[k] + ' · ' + pc + ' %' })]);
+          }))
+        ]);
+      }).filter(Boolean);
+      return h('div', { class: 'prof-group' }, [h('h2', { class: 'prof-title', text: name + ' — ' + g.rows.length + ' inscrit(s)' }),
+        cards.length ? h('div', { class: 'prof-grid' }, cards) : h('p', { class: 'note', text: 'Pas de questions à choix pour ce billet.' })]);
+    }));
+  }
+
+  function exportCsv() {
+    var c = cacheRef(); if (!c) return;
+    var qs = c.questions;
+    var head = ['Nom', 'Téléphone', 'E-mail', 'Billet', 'Quantité', 'Montant HTG', 'Statut', 'Paiement', 'Référence', 'Date'].concat(qs.map(function (q) { return q.label; }), ['Présent', 'Accepte contact BiZ']);
+    var lines = [head].concat(c.orders.map(function (o) {
+      return [o.buyer_name, o.buyer_phone, o.buyer_email || '', o.ticket_types.name, o.quantity, o.amount_htg, o.status, o.payment_method, o.payment_ref || '', o.created_at]
+        .concat(qs.map(function (q) { return (o.answers || {})[q.id] || ''; }), [present(c, o) ? 'oui' : 'non', o.consent_biz ? 'oui' : 'non']);
+    }));
+    var csv = '\ufeff' + lines.map(function (r) { return r.map(function (v) { v = String(v == null ? '' : v); return /[";\n,]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(';'); }).join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'participants-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  var cacheRef = function () { return null; };
 
   function orderCard(o, tickets, refresh) {
     var phone = normPhone(o.buyer_phone);
