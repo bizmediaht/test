@@ -26,6 +26,91 @@ PROFILES = [("etudiant", 203, 93), ("employe", 76, 41), ("proprietaire", 51, 29)
 GENDER = [("femme", 201), ("homme", 124)]          # 1 non renseigné
 CITY = [("cap", 283), ("nord", 18), ("pap", 11), ("autre", 14)]
 SOURCES = [("ami", 140), ("whatsapp", 131), ("instagram", 14), ("affiche", 13), ("surplace", 11), ("facebook", 6), ("autre", 11)]
+# Site d'inscription : mesure des visites du 11/11 (début du suivi) au 23/11/2026
+WEB_PV, WEB_VISITS = 2703, 1583
+WEB_DAYS = [("11/11", 3), ("12/11", 139), ("13/11", 51), ("14/11", 71), ("15/11", 125), ("16/11", 116), ("17/11", 199),
+            ("18/11", 175), ("19/11", 165), ("20/11", 183), ("21/11", 157), ("22/11", 175), ("23/11", 66)]  # visites (sessions)
+WEB_HOURS = [39, 32, 22, 10, 9, 22, 47, 157, 163, 246, 196, 192, 136, 121, 126, 153, 123, 131, 107, 112, 195, 159, 131, 74]  # pages vues par heure
+WEB_MOBILE = (1354, 1592)
+WEB_SRC = [("direct", 1366), ("search", 88), ("instagram", 43), ("facebook", 38), ("autre", 48)]
+WEB_PAGES = [("home", 904), ("reserve", 691), ("cert", 336), ("vol", 182), ("profil", 154)]
+WEB_SIGNUPS = 213   # inscriptions en ligne du 12 au 22/11 (suivi actif toute la journée), hors inscriptions sur place
+WEB_TXT = {
+    "fr": dict(title="Le site d’inscription", sub="Visites mesurées du 11 au 23 novembre 2026 (début du suivi : 11/11)",
+               k1="visites", k2="pages vues", k3="des visites sur téléphone", k4="taux de conversion (inscriptions ÷ visites)",
+               c1="Visites par jour", c1s="Jour J (22/11) en surbrillance", c2="Pages vues par heure de la journée",
+               c2s="Pics le matin (9 h) et le soir (20 h)", c3="D’où viennent les visiteurs", c3n="Les liens partagés sur WhatsApp arrivent en « lien direct » : WhatsApp n’indique pas sa provenance.",
+               c4="Pages les plus vues", tipD="{d} : {n} visites", tipH="{h} h : {n} pages vues",
+               lab=dict(direct="Lien direct / WhatsApp", search="Google et moteurs", instagram="Instagram", facebook="Facebook", autre="Autres",
+                        home="Accueil", reserve="Réservation", cert="Certificat", vol="Bénévoles", profil="Test de profil"),
+               cols=("Jour", "Visites"), colsH=("Heure", "Pages vues"), colsS=("Source", "Visites", "Part"), colsP=("Page", "Pages vues", "Part")),
+    "en": dict(title="The registration website", sub="Visits measured from November 11 to 23, 2026 (tracking started 11/11)",
+               k1="visits", k2="page views", k3="of visits on a phone", k4="conversion rate (registrations ÷ visits)",
+               c1="Visits per day", c1s="Event day (11/22) highlighted", c2="Page views by hour of day",
+               c2s="Peaks in the morning (9 am) and evening (8 pm)", c3="Where visitors came from", c3n="Links shared on WhatsApp show up as “direct”: WhatsApp does not pass its origin.",
+               c4="Most viewed pages", tipD="{d}: {n} visits", tipH="{h}:00: {n} page views",
+               lab=dict(direct="Direct link / WhatsApp", search="Google & search", instagram="Instagram", facebook="Facebook", autre="Other",
+                        home="Home", reserve="Booking", cert="Certificate", vol="Volunteers", profil="Profile quiz"),
+               cols=("Day", "Visits"), colsH=("Hour", "Page views"), colsS=("Source", "Visits", "Share"), colsP=("Page", "Page views", "Share")),
+}
+
+
+def columns(rows, tipfmt, hi, cols, W=420, H=230, every=2):
+    """Histogramme simple : rows = [(étiquette, valeur)], hi = indices en couleur d'accent."""
+    L, R, T, B = 34, 6, 18, 30
+    vmax = max(v for _, v in rows)
+    step = 50 if vmax <= 250 else 100
+    ymax = ((vmax // step) + 1) * step
+    n = len(rows); slot = (W - L - R) / n; bw = min(24, slot - 4)
+    y = lambda v: T + (H - T - B) * (1 - v / ymax)
+    out = "".join(f'<line x1="{L}" x2="{W-R}" y1="{y(v):.1f}" y2="{y(v):.1f}" stroke="{GRID}" stroke-width="1"/>'
+                  f'<text x="{L-6}" y="{y(v)+4:.1f}" text-anchor="end" class="ax">{v}</text>' for v in range(0, ymax + 1, step))
+    for i, (lab, v) in enumerate(rows):
+        cx = L + slot * i + slot / 2; top, base = y(v), y(0); r = min(4, max(0, (base - top) / 2))
+        x0, x1 = cx - bw / 2, cx + bw / 2
+        out += (f'<path d="M{x0:.1f},{base:.1f} L{x0:.1f},{top+r:.1f} Q{x0:.1f},{top:.1f} {x0+r:.1f},{top:.1f} L{x1-r:.1f},{top:.1f} '
+                f'Q{x1:.1f},{top:.1f} {x1:.1f},{top+r:.1f} L{x1:.1f},{base:.1f} Z" fill="{GOLD if i in hi else MUTED}"/>')
+        if i % every == 0:
+            out += f'<text x="{cx:.1f}" y="{H-10}" text-anchor="middle" class="ax">{lab}</text>'
+        tip = e(tipfmt(lab, v))
+        out += f'<rect x="{cx-slot/2:.1f}" y="{T}" width="{slot:.1f}" height="{H-T-B}" fill="transparent" tabindex="0" data-tip="{tip}" aria-label="{tip}"/>'
+    svg = f'<svg viewBox="0 0 {W} {H}" role="img">{out}</svg>'
+    table = "<table><thead><tr>" + "".join(f"<th>{e(c)}</th>" for c in cols) + "</tr></thead><tbody>" + \
+            "".join(f"<tr><td>{lab}</td><td>{v}</td></tr>" for lab, v in rows) + "</tbody></table>"
+    return svg, table
+
+
+def web_html(lang):
+    w = WEB_TXT[lang]; t = TXT[lang]; sp = " %" if lang == "fr" else "%"
+    nb = t["nb"]
+    kpis = [(nb(WEB_VISITS), w["k1"]), (nb(WEB_PV), w["k2"]), (f"{pct(*WEB_MOBILE)}{sp}", w["k3"]), (f"{pct(WEB_SIGNUPS, WEB_VISITS)}{sp}", w["k4"])]
+    kp = "".join(f'<div class="kpi"><b>{e(k)}</b><span>{e(l)}</span></div>' for k, l in kpis)
+    s1, t1 = columns(WEB_DAYS, lambda d, n: w["tipD"].format(d=d, n=n), {11}, w["cols"])
+    s2, t2 = columns([(f"{h}", n) for h, n in enumerate(WEB_HOURS)], lambda h, n: w["tipH"].format(h=h, n=n), {9, 20}, w["colsH"], every=3)
+
+    def hbars(rows, total, cols):
+        bars = "".join(f'<div class="hb sm" tabindex="0" data-tip="{e(w["lab"][k])} : {n}"><span class="hb-l">{e(w["lab"][k])}</span>'
+                       f'<span class="hb-track"><span class="hb-fill" style="width:{pct(n, total)}%;background:{GOLD}"></span></span>'
+                       f'<b class="hb-v">{pct(n, total)}{sp}</b></div>' for k, n in rows)
+        table = "<table><thead><tr>" + "".join(f"<th>{e(c)}</th>" for c in cols) + "</tr></thead><tbody>" + \
+                "".join(f"<tr><td>{e(w['lab'][k])}</td><td>{n}</td><td>{pct(n, total)}{sp}</td></tr>" for k, n in rows) + "</tbody></table>"
+        return f'<div class="hbars">{bars}</div>', table
+    b3, t3 = hbars(WEB_SRC, sum(n for _, n in WEB_SRC), w["colsS"])
+    b4, t4 = hbars(WEB_PAGES, WEB_PV, w["colsP"])
+
+    def card(title, sub, body, table, note=""):
+        return (f'<figure class="chart"><figcaption><b>{e(title)}</b>{f"<span>{e(sub)}</span>" if sub else ""}</figcaption>{body}'
+                f'{f"<p class=gain>{e(note)}</p>" if note else ""}<details class="data"><summary>{e(t["data"])}</summary>{table}</details></figure>')
+    return f'''<div class="aud-head"><h3>{e(w["title"])}</h3><p>{e(w["sub"])}</p></div>
+<div class="kpis-row">{kp}</div>
+<div class="charts">
+{card(w["c1"], w["c1s"], s1, t1)}
+{card(w["c2"], w["c2s"], s2, t2)}
+{card(w["c3"], "", b3, t3, w["c3n"])}
+{card(w["c4"], "", b4, t4)}
+</div>'''
+
+
 AUD_TXT = {
     "fr": dict(title="Qui était dans la salle ?", sub="326 inscriptions actives · profils déclarés à l’inscription",
                prof="Profil professionnel", profs="Plusieurs choix possibles : le total dépasse 100 %",
@@ -231,6 +316,7 @@ def proof_html(lang, more_link=""):
 {card(t["c3"], t["c3s"], s3, t3)}
 </div>
 {audience_html(lang)}
+{web_html(lang)}
 <p class="src">{e(t["source"])}{more_link}</p>
 <div class="chart-tip" role="tooltip" hidden></div>
 </div>'''
