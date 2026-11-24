@@ -18,7 +18,7 @@
       chooseType: 'Type de billet', qty: 'Nombre de billets', total: 'Total à payer',
       payTitle: 'Comment payer', payStep1: function (amt, m, num) { return 'Envoyez ' + amt + ' par ' + m + ' au ' + num + '.'; },
       payStep2: 'Notez le numéro de transaction reçu par SMS.', payStep3: 'Remplissez le formulaire ci-dessous. Nous vérifions votre paiement et vous envoyons vos billets sur WhatsApp.',
-      name: 'Nom complet', phone: 'Numéro WhatsApp', free: 'Entrée gratuite', register: 'S’inscrire', freeNote: 'Entrée gratuite : votre billet est créé immédiatement.', choose: '— Choisir —', sendFree: 'Obtenir mon billet', email: 'E-mail (facultatif)',
+      name: 'Nom complet', phone: 'Numéro WhatsApp', previewTitle: 'Aperçu privé', previewText: 'Cet événement n’est pas encore publié. Vous voyez la page telle que le public la verra ; l’envoi du formulaire est désactivé.', previewSubmit: 'Aperçu : le formulaire est complet, mais rien n’a été envoyé.', free: 'Entrée gratuite', register: 'S’inscrire', freeNote: 'Entrée gratuite : votre billet est créé immédiatement.', choose: '— Choisir —', sendFree: 'Obtenir mon billet', email: 'E-mail (facultatif)',
       cEvent: function (o) { return 'J’accepte que ' + o + ' utilise mes informations pour gérer ma participation à cet événement.'; },
       cBiz: 'J’accepte que BiZ Media me contacte pour d’autres événements et opportunités (facultatif).',
       organizer: 'Organisé par ', withdraw: 'Ne plus être contacté par BiZ Media', withdrawn: 'C’est noté : BiZ Media ne vous contactera plus.', method: 'Paiement envoyé par', ref: 'Numéro de transaction', proof: 'Capture d’écran du paiement (facultatif)',
@@ -39,7 +39,7 @@
       chooseType: 'Ticket type', qty: 'Number of tickets', total: 'Total to pay',
       payTitle: 'How to pay', payStep1: function (amt, m, num) { return 'Send ' + amt + ' via ' + m + ' to ' + num + '.'; },
       payStep2: 'Note the transaction number you receive by SMS.', payStep3: 'Fill in the form below. We check your payment and send your tickets on WhatsApp.',
-      name: 'Full name', phone: 'WhatsApp number', free: 'Free entry', register: 'Register', freeNote: 'Free entry: your ticket is created right away.', choose: '— Choose —', sendFree: 'Get my ticket', email: 'Email (optional)',
+      name: 'Full name', phone: 'WhatsApp number', previewTitle: 'Private preview', previewText: 'This event is not published yet. You see the page as the public will; form submission is disabled.', previewSubmit: 'Preview: the form is complete, but nothing was sent.', free: 'Free entry', register: 'Register', freeNote: 'Free entry: your ticket is created right away.', choose: '— Choose —', sendFree: 'Get my ticket', email: 'Email (optional)',
       cEvent: function (o) { return 'I agree that ' + o + ' may use my information to manage my attendance at this event.'; },
       cBiz: 'I agree that BiZ Media may contact me about other events and opportunities (optional).',
       organizer: 'Organized by ', withdraw: 'Stop BiZ Media from contacting me', withdrawn: 'Done: BiZ Media will no longer contact you.', method: 'Payment sent with', ref: 'Transaction number', proof: 'Payment screenshot (optional)',
@@ -91,7 +91,12 @@
     var slug = param('e');
     var q = sb.from('events').select('id, slug, title, description, venue, starts_at, payment_number, payment_methods, questions, organizations(slug, name, logo_url, brand_color, accent_color), ticket_types(id, name, description, price_htg, sort, questions)').eq('is_published', true).order('starts_at');
     var orgSlug = body.getAttribute('data-org');
-    var res = slug ? await q.eq('slug', slug) : await q;
+    var preview = param('preview');
+    var res;
+    if (slug && preview) {
+      var pr = await sb.rpc('event_preview', { p_slug: slug, p_token: preview });
+      res = { error: pr.error, data: pr.data ? [pr.data] : [] };
+    } else res = slug ? await q.eq('slug', slug) : await q;
     if (res.error) return msg(app, L.errGeneric, 'err');
     if (!slug) {
       if (orgSlug) res.data = res.data.filter(function (ev) { return ev.organizations && ev.organizations.slug === orgSlug; });
@@ -110,8 +115,9 @@
     var ev = res.data[0];
     if (!ev) return msg(app, L.notFound, 'err');
     document.title = ev.title + ' — BiZ Media';
-    var av = await sb.rpc('event_availability', { p_slug: ev.slug });
-    var left = {}; (av.data || []).forEach(function (r) { left[r.ticket_type_id] = r.seats_left; });
+    var left = {};
+    if (preview) ev.ticket_types.forEach(function (t) { left[t.id] = t.seats_left; });
+    else { var av = await sb.rpc('event_availability', { p_slug: ev.slug }); (av.data || []).forEach(function (r) { left[r.ticket_type_id] = r.seats_left; }); }
     var types = ev.ticket_types.slice().sort(function (a, b) { return a.sort - b.sort; });
     var methods = ev.payment_methods.split(/\s*,\s*/);
     var org = (ev.organizations && ev.organizations.name) || 'BiZ Media';
@@ -182,6 +188,7 @@
     ]);
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
+      if (preview) { msg(status, L.previewSubmit, 'warn'); status.scrollIntoView({ block: 'center' }); return; }
       var btn = $('button', form); btn.disabled = true; btn.textContent = L.sending;
       try {
         var sel = $('input[name=tt]:checked', typeBox); if (!sel) throw new Error(L.soldOut);
@@ -208,7 +215,8 @@
     var freeNote = h('p', { class: 'pay free', text: L.freeNote, hidden: true });
     var lg = ev.organizations && ev.organizations.logo_url;
     app.replaceChildren(
-      h('a', { class: 'dark-link back', href: './', text: L.back }),
+      preview ? h('div', { class: 'preview-bar', role: 'status' }, [h('b', { text: L.previewTitle }), h('span', { text: L.previewText })]) : null,
+      preview ? null : h('a', { class: 'dark-link back', href: './', text: L.back }),
       h('div', { class: 'shop' }, [
         h('div', { class: 'shop-info' }, [
           h('span', { class: 'eyebrow', text: when(ev.starts_at) }),

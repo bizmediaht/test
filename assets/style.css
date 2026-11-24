@@ -453,3 +453,5 @@ footer .note{flex-basis:100%;font-size:12px;color:#94A3B8}
 .hb.light .hb-track{background:#F1F5F9}.hb.light .hb-fill{background:var(--gold)}
 .prof-group{display:flex;flex-direction:column;gap:14px;margin-bottom:28px}
 .prof-title{font-size:20px}
+.preview-bar{display:flex;flex-direction:column;gap:4px;background:#FEF3C7;border:1px solid #F59E0B;color:#78350F;border-radius:14px;padding:14px 18px;margin-bottom:24px}
+.note.warn{color:#92400E}
