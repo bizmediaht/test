@@ -104,3 +104,64 @@ footer .c{color:#94A3B8;font-size:14px}
   .stats b{font-size:34px}
   form{padding:22px}
 }
+
+/* ---- Pages intérieures ---- */
+nav a.l[aria-current]{color:#fff;text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:8px;text-decoration-thickness:2px}
+.info a{color:#334155}
+.page-hero{padding:72px 24px 80px}
+.page-hero .col{flex-basis:100%;max-width:820px}
+.page-hero h1{font-size:clamp(2.25rem,4.5vw,3.5rem)}
+.narrow{max-width:820px}
+section h2+.faq,section h2+.story,section h2+.gallery{margin-top:32px}
+
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;align-items:stretch}
+.plan{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:30px 26px;display:flex;flex-direction:column;gap:16px}
+.plan h2{font-size:22px;letter-spacing:-.3px}
+.plan .pdesc{margin:0;color:var(--slate);font-size:15px;line-height:1.5}
+.plan-pop{background:var(--navy);border-color:var(--navy);color:#fff}
+.plan-pop .pdesc,.plan-pop .from,.plan-pop .per{color:var(--slate-l)}
+.plan-pop .checks li{color:#E2E8F0}
+.plan-pop .checks svg{stroke:var(--gold)}
+.badge{position:absolute;top:-13px;left:26px;background:var(--gold);color:var(--navy);font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px}
+.price{display:flex;flex-direction:column;gap:2px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.plan-pop .price{border-color:#334155}
+.price b{font-size:28px;letter-spacing:-.5px}
+.from,.per{font-size:13px;font-weight:600;color:var(--slate)}
+.checks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;flex:1}
+.checks li{display:flex;gap:10px;align-items:flex-start;font-size:15px;font-weight:600;color:#334155;line-height:1.4}
+.checks svg{flex-shrink:0;margin-top:1px}
+.plan .btn{width:100%}
+.custom{margin-top:40px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px}
+.custom>div{flex:1 1 420px;display:flex;flex-direction:column;gap:8px}
+.custom h2{font-size:26px}
+
+.faq{display:flex;flex-direction:column;gap:12px}
+.faq details{border:1px solid var(--line);border-radius:14px;padding:0 22px;background:#fff}
+.faq summary{cursor:pointer;font-weight:800;font-size:17px;padding:20px 0;min-height:44px;list-style-position:outside}
+.faq p{margin:0 0 20px;color:var(--slate);line-height:1.6}
+
+.cs{display:flex;flex-wrap:wrap;gap:48px}
+.cs-main{flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.cs-main h3{font-size:20px;margin-top:12px}
+.cs-side{flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.cs-side h3{font-size:20px}
+.meta{display:flex;flex-wrap:wrap;gap:12px 32px;margin:0}
+.meta dt{font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--slate)}
+.meta dd{margin:2px 0 0;font-weight:700}
+.stats-light{flex:none}
+.stats-light div{background:var(--navy)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.ph{aspect-ratio:4/3;border-radius:16px;background:#F1F5F9;border:1px dashed #94A3B8;display:flex;align-items:center;justify-content:center;color:var(--slate);font-weight:600}
+.cta-band{padding:72px 24px}
+.cta-band .wrap{justify-content:space-between}
+
+.story{display:flex;flex-direction:column;gap:16px}
+.values{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.val{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;border-top:3px solid var(--gold)}
+.val h3{font-size:19px;margin-bottom:6px}
+.val p{margin:0;color:var(--slate);line-height:1.55}
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}
+.member{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.avatar{width:96px;height:96px;border-radius:50%;background:#E2E8F0;margin-bottom:8px}
+.member span{color:var(--slate);font-size:14px;font-weight:600}
+footer .fl a{color:#CBD5E1;text-decoration:none}footer .fl a:hover{color:#fff}
