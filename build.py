@@ -4,6 +4,7 @@ Modifier les textes, les prix ou les coordonnées ici, puis lancer :  python3 bu
 """
 from html import escape
 from pathlib import Path
+from proof_data import proof_html
 
 SITE_URL = "https://bizmedia.ht"
 CONTACT = {
@@ -316,6 +317,7 @@ def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False):
 document.getElementById('y').textContent=new Date().getFullYear();
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){{v.pause();v.removeAttribute('autoplay')}});
 (function(){{var it=document.querySelectorAll('.rot-i');if(it.length<2||matchMedia('(prefers-reduced-motion: reduce)').matches)return;var i=0;setInterval(function(){{it[i].classList.remove('on');i=(i+1)%it.length;it[i].classList.add('on');}},3200);}})();
+document.querySelectorAll('.proof-data').forEach(function(box){{var tip=box.querySelector('.chart-tip');function show(ev){{var el=ev.target.closest('[data-tip]');if(!el||!box.contains(el)){{tip.hidden=true;return;}}tip.textContent=el.getAttribute('data-tip');tip.hidden=false;var r=el.getBoundingClientRect(),b=box.getBoundingClientRect();tip.style.left=Math.max(8,Math.min(b.width-tip.offsetWidth-8,r.left-b.left+r.width/2-tip.offsetWidth/2))+'px';tip.style.top=(r.top-b.top-tip.offsetHeight-8)+'px';}}box.addEventListener('mouseover',show);box.addEventListener('focusin',show);box.addEventListener('mouseleave',function(){{tip.hidden=true}});box.addEventListener('focusout',function(){{tip.hidden=true}});}});
 var q=document.getElementById('quote');
 if(q)q.addEventListener('submit',function(ev){{
   ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){{return f.elements[n].value.trim()}};
@@ -535,14 +537,8 @@ def home(lang):
 </div>
 </section>
 <section class="case" id="preuve">
-<div class="wrap proof">
-<div class="col"><span class="eyebrow">{e(h["proofEyebrow"])}</span><h2>{e(h["proofTitle"])}</h2><p class="lead">{e(h["proofText"])}</p>
-{quote_html(h)}
-<a class="more" href="{rel(me, PAGES["work"][lang])}">{e(h["proofCta"])}</a></div>
-<div class="stats">
-{stats_html(t)}
-</div>
-</div>
+{proof_html(lang, f' <a class="more" href="{rel(me, PAGES["work"][lang])}">{e(h["proofCta"])}</a>')}
+<div class="wrap">{quote_html(h)}</div>
 <div class="wrap photos">{photos}</div>
 </section>
 <section class="services" id="forfaits">
@@ -629,14 +625,11 @@ def work(lang):
 <h3>{e(t["csChallengeT"])}</h3><p class="lead">{e(t["csChallenge"])}</p>
 <h3>{e(t["csSolutionT"])}</h3><ul class="checks">{sol}</ul>
 </div>
-<div class="cs-side">
-<h3>{e(t["csResultsT"])}</h3>
-<div class="stats stats-light">
-{stats_html(t)}
-</div>
-</div>
 </div>
 </div></section>
+<section class="case" id="resultats">
+{proof_html(lang)}
+</section>
 <section><div class="wrap">
 <h2>{e(t["galleryTitle"])}</h2>
 <div class="gallery">{gallery}</div>

@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=dbd47364">
+<link rel="stylesheet" href="../assets/style.css?v=57cdc312">
 </head>
 <body>
 <a class="skip" href="#main">Aller au contenu</a>
@@ -72,6 +72,7 @@
 document.getElementById('y').textContent=new Date().getFullYear();
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){v.pause();v.removeAttribute('autoplay')});
 (function(){var it=document.querySelectorAll('.rot-i');if(it.length<2||matchMedia('(prefers-reduced-motion: reduce)').matches)return;var i=0;setInterval(function(){it[i].classList.remove('on');i=(i+1)%it.length;it[i].classList.add('on');},3200);})();
+document.querySelectorAll('.proof-data').forEach(function(box){var tip=box.querySelector('.chart-tip');function show(ev){var el=ev.target.closest('[data-tip]');if(!el||!box.contains(el)){tip.hidden=true;return;}tip.textContent=el.getAttribute('data-tip');tip.hidden=false;var r=el.getBoundingClientRect(),b=box.getBoundingClientRect();tip.style.left=Math.max(8,Math.min(b.width-tip.offsetWidth-8,r.left-b.left+r.width/2-tip.offsetWidth/2))+'px';tip.style.top=(r.top-b.top-tip.offsetHeight-8)+'px';}box.addEventListener('mouseover',show);box.addEventListener('focusin',show);box.addEventListener('mouseleave',function(){tip.hidden=true});box.addEventListener('focusout',function(){tip.hidden=true});});
 var q=document.getElementById('quote');
 if(q)q.addEventListener('submit',function(ev){
   ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){return f.elements[n].value.trim()};
