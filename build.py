@@ -310,63 +310,216 @@ def stats_html(t):
     return "\n".join(f'<div><b>{n}</b><span>{e(l)}</span></div>' for n, l in zip(NUMS, t["stats"]))
 
 # ---------------- Pages ----------------
+# Textes de la page d'accueil (structure orientée client)
+HOME = {
+"fr": dict(
+    eyebrow="Stories That Connect. Solutions That Work.",
+    h1a="Votre événement :", h1b="plus d’inscrits, zéro désordre", h1c="et des images dont vous serez fiers.",
+    lead="Inscriptions en ligne, confirmations WhatsApp, pointage à l’entrée, couverture photo & vidéo et rapport final. Une seule équipe s’occupe de tout, avant, pendant et après.",
+    ctaWa="Écrivez-nous sur WhatsApp", ctaForm="Demander un devis", ctaHow="Voir comment ça marche",
+    reel="[ Showreel vidéo 30–60 s ]", reelLabel="Lire le showreel",
+    trust="Système déjà utilisé pour Bwat Sekrèm Talks",
+    trustStats=[("374", "inscrits"), ("188", "présents pointés"), ("675", "messages envoyés")],
+    howEyebrow="Comment ça marche", howTitle="Vous organisez. Nous gérons le reste.",
+    howLead="Trois étapes, un seul interlocuteur. Voici ce que vivent vos participants, et ce que vous voyez de votre côté.",
+    how=[
+        dict(tag="Avant l’événement", title="Les inscriptions se gèrent toutes seules",
+             text="Une page d’inscription à vos couleurs. Chaque inscrit reçoit sa confirmation sur WhatsApp. Quand c’est complet, la liste d’attente prend le relais.",
+             points=["Formulaire en ligne", "Confirmation WhatsApp automatique", "Relances & liste d’attente"]),
+        dict(tag="Le jour J", title="Un accueil rapide, une équipe qui filme",
+             text="À l’entrée, on pointe chaque participant en quelques secondes. Pendant ce temps, nos photographes et vidéastes capturent les moments forts.",
+             points=["Pointage à l’entrée", "Présences en temps réel", "Photo & vidéo professionnelles"]),
+        dict(tag="Après", title="Des résultats concrets, des images à partager",
+             text="Les participants reçoivent leur certificat. Vous recevez les photos, la vidéo highlights et un rapport complet de votre événement.",
+             points=["Certificats envoyés", "Photos & vidéo livrées", "Rapport de participation"]),
+    ],
+    mForm=dict(title="Inscription — [Votre événement]", name="Nom complet", phone="WhatsApp", btn="Je m’inscris"),
+    mWa=dict(head="BiZ Événements", msg="Bonjour Nadia Votre inscription à [Votre événement] est confirmée. Rendez-vous le [date] à [heure]. Présentez ce message à l’entrée.", time="09:41", reply="Merci !"),
+    mDash=dict(title="Tableau de bord", live="En direct", reg="Inscrits", here="Présents", rate="Taux de présence", recent="Derniers arrivés"),
+    proofEyebrow="La preuve", proofTitle="Bwat Sekrèm Talks : un système, des centaines de participants.",
+    proofText="Inscriptions, confirmations, liste d’attente, pointage, certificats et suivi de chaque participant : tout a été conçu et opéré par notre équipe.",
+    proofCta="Voir l’étude de cas →",
+    quote="[ Témoignage du responsable de Bwat Sekrèm : une ou deux phrases sur le résultat obtenu. ]", quoteWho="[Nom]", quoteRole="[Fonction], Bwat Sekrèm",
+    photosPh="[ Photo ]",
+    pkEyebrow="Nos forfaits", pkTitle="Choisissez votre point de départ.", pkLead="Chaque forfait s’adapte à votre événement. Le premier appel est gratuit.",
+    pkAll="Voir tous les forfaits et la FAQ →",
+    svcEyebrow="Et aussi", svcTitle="Pour les entreprises, toute l’année.",
+    svc=[("media", "Photo & vidéo", "Reportages, portraits et couverture d’événements."),
+         ("prod", "Productions", "Interviews, mini-documentaires et spots publicitaires."),
+         ("digital", "CRM & automatisation", "Suivi clients, relances WhatsApp et tableaux de bord."),
+         ("corp", "Communication", "Image de marque, contenu institutionnel et interne.")],
+    faqTitle="Vos questions",
+    faq=[("Mes participants doivent-ils installer une application ?", "Non. Ils s’inscrivent depuis un simple lien et reçoivent leurs messages sur WhatsApp."),
+         ("Puis-je prendre seulement le système, sans photo ni vidéo ?", "Oui, c’est le Pack Événement Essentiel. Vous pouvez aussi réserver uniquement la couverture média."),
+         ("Combien de temps faut-il pour tout mettre en place ?", "[À compléter : délai de mise en place recommandé.]"),
+         ("Comment se passe le paiement ?", "[À compléter : acompte, solde, modes de paiement.]")],
+    finalTitle="Parlons de votre prochain événement.", finalText="Dites-nous la date, le lieu et le nombre de participants attendus. Nous revenons vers vous avec une proposition.",
+    floatWa="WhatsApp", floatContact="Nous écrire",
+),
+"en": dict(
+    eyebrow="Stories That Connect. Solutions That Work.",
+    h1a="Your event:", h1b="more sign-ups, zero chaos at the door", h1c="and images you’ll be proud of.",
+    lead="Online registration, WhatsApp confirmations, check-in at the door, photo & video coverage and a final report. One team handles it all, before, during and after.",
+    ctaWa="Message us on WhatsApp", ctaForm="Get a quote", ctaHow="See how it works",
+    reel="[ Video showreel 30–60 s ]", reelLabel="Play the showreel",
+    trust="System already used for Bwat Sekrèm Talks",
+    trustStats=[("374", "registered"), ("188", "checked in"), ("675", "messages sent")],
+    howEyebrow="How it works", howTitle="You host. We handle the rest.",
+    howLead="Three steps, one point of contact. Here is what your attendees experience, and what you see on your side.",
+    how=[
+        dict(tag="Before the event", title="Registrations run themselves",
+             text="A branded registration page. Every attendee gets a WhatsApp confirmation. When seats run out, the waitlist takes over.",
+             points=["Online form", "Automatic WhatsApp confirmation", "Reminders & waitlist"]),
+        dict(tag="On the day", title="A fast welcome, a team that films",
+             text="At the door, each attendee is checked in within seconds. Meanwhile, our photographers and videographers capture the key moments.",
+             points=["Door check-in", "Live attendance", "Professional photo & video"]),
+        dict(tag="After", title="Real results, images to share",
+             text="Attendees receive their certificate. You receive the photos, the highlight video and a full report of your event.",
+             points=["Certificates sent", "Photos & video delivered", "Attendance report"]),
+    ],
+    mForm=dict(title="Registration — [Your event]", name="Full name", phone="WhatsApp", btn="Register"),
+    mWa=dict(head="BiZ Events", msg="Hi Nadia Your registration for [Your event] is confirmed. See you on [date] at [time]. Show this message at the door.", time="09:41", reply="Thanks!"),
+    mDash=dict(title="Dashboard", live="Live", reg="Registered", here="Checked in", rate="Attendance rate", recent="Latest arrivals"),
+    proofEyebrow="The proof", proofTitle="Bwat Sekrèm Talks: one system, hundreds of attendees.",
+    proofText="Registrations, confirmations, waitlist, check-in, certificates and follow-up for every attendee: all designed and run by our team.",
+    proofCta="Read the case study →",
+    quote="[ Testimonial from the Bwat Sekrèm lead: one or two sentences about the result. ]", quoteWho="[Name]", quoteRole="[Role], Bwat Sekrèm",
+    photosPh="[ Photo ]",
+    pkEyebrow="Our packages", pkTitle="Pick your starting point.", pkLead="Every package adapts to your event. The first call is free.",
+    pkAll="See all packages and FAQ →",
+    svcEyebrow="Also", svcTitle="For businesses, all year round.",
+    svc=[("media", "Photo & video", "Reports, portraits and event coverage."),
+         ("prod", "Productions", "Interviews, mini-documentaries and commercials."),
+         ("digital", "CRM & automation", "Customer follow-up, WhatsApp reminders and dashboards."),
+         ("corp", "Communications", "Brand image, institutional and internal content.")],
+    faqTitle="Your questions",
+    faq=[("Do attendees need to install an app?", "No. They register from a simple link and receive their messages on WhatsApp."),
+         ("Can I get only the system, without photo or video?", "Yes, that’s the Essential Event Package. You can also book media coverage only."),
+         ("How long does setup take?", "[To complete: recommended setup lead time.]"),
+         ("How does payment work?", "[To complete: deposit, balance, payment methods.]")],
+    finalTitle="Let’s talk about your next event.", finalText="Tell us the date, the venue and how many attendees you expect. We’ll get back to you with a proposal.",
+    floatWa="WhatsApp", floatContact="Contact us",
+),
+}
+
+WA_ICON = '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>'
+
+def wa_link(lang):
+    if not CONTACT["whatsapp"]:
+        return None
+    from urllib.parse import quote
+    return f'https://wa.me/{CONTACT["whatsapp"]}?text={quote(T[lang]["msgIntro"])}'
+
 def home(lang):
-    t = T[lang]; me = PAGES["home"][lang]
-    services = "\n".join(f'''<article class="card">
-<div class="ico">{svg(k)}</div>
-<div><h3>{e(n)}</h3><p>{e(d)}</p></div>
-<ul class="dots">{"".join(f"<li>{e(i)}</li>" for i in items)}</ul>
-</article>''' for k, n, d, items in t["services"])
-    steps = "\n".join(f'<li><span class="n">0{i+1}</span><h3>{e(a)}</h3><p>{e(b)}</p></li>' for i, (a, b) in enumerate(t["steps"]))
+    t = T[lang]; h = HOME[lang]; me = PAGES["home"][lang]
+    wa = wa_link(lang)
+    cta_main = (f'<a class="btn btn-gold" href="{e(wa)}" target="_blank" rel="noopener">{WA_ICON}<span>{e(h["ctaWa"])}</span></a>' if wa
+                else f'<a class="btn btn-gold" href="#contact">{e(h["ctaForm"])}</a>')
+    trust = "".join(f'<li><b>{n}</b> {e(l)}</li>' for n, l in h["trustStats"])
+    f, w, d = h["mForm"], h["mWa"], h["mDash"]
+    mocks = [
+        f'''<div class="mock mock-form" aria-hidden="true">
+<div class="mf-top"><span class="biz sm"><span>B</span><span class="i"><span class="dot"></span><span class="stem"></span></span><span>Z</span></span></div>
+<b class="mf-title">{e(f["title"])}</b>
+<span class="mf-l">{e(f["name"])}</span><span class="mf-in">Nadia J.</span>
+<span class="mf-l">{e(f["phone"])}</span><span class="mf-in">+509 •••• ••••</span>
+<span class="mf-btn">{e(f["btn"])}</span>
+</div>''',
+        f'''<div class="mock mock-wa" aria-hidden="true">
+<div class="wa-head"><span class="wa-av">B</span><b>{e(w["head"])}</b></div>
+<div class="wa-body"><p class="bub in">{e(w["msg"])}<span class="tm">{w["time"]}</span></p><p class="bub out">{e(w["reply"])}<span class="tm">{w["time"]} ✓✓</span></p></div>
+</div>''',
+        f'''<div class="mock mock-dash" aria-hidden="true">
+<div class="md-h"><b>{e(d["title"])}</b><span class="live">{e(d["live"])}</span></div>
+<div class="md-k"><div><b>374</b><span>{e(d["reg"])}</span></div><div><b>188</b><span>{e(d["here"])}</span></div></div>
+<div class="md-bar"><span>{e(d["rate"])}</span><div><i style="width:50%"></i></div></div>
+<span class="md-r">{e(d["recent"])}</span>
+<ul class="md-list"><li><i></i>Participant #188</li><li><i></i>Participant #187</li><li><i></i>Participant #186</li></ul>
+</div>''',
+    ]
+    how = "\n".join(f'''<li class="how-step">
+<div class="how-txt"><span class="how-tag">0{i+1} · {e(s["tag"])}</span><h3>{e(s["title"])}</h3><p>{e(s["text"])}</p>
+<ul class="checks">{"".join(f'<li>{svg("check", "#B45309", 18)}<span>{e(p)}</span></li>' for p in s["points"])}</ul></div>
+<div class="how-vis">{mocks[i]}</div>
+</li>''' for i, s in enumerate(h["how"]))
+    photos = "".join(f'<div class="ph">{e(h["photosPh"])}</div>' for _ in range(3))
+    plans = []
+    for i, p in enumerate(t["packages"][:3]):
+        opt = {0: 1, 1: 0, 2: 2}[i]
+        badge = f'<span class="badge">{e(t["pkPopular"])}</span>' if p["popular"] else ""
+        items = "".join(f'<li>{svg("check", "#B45309", 18)}<span>{e(x)}</span></li>' for x in p["items"][:4])
+        plans.append(f'''<article class="plan{' plan-pop' if p["popular"] else ''}">
+{badge}<h3 class="plan-h">{e(p["name"])}</h3><p class="pdesc">{e(p["desc"])}</p>
+<div class="price"><span class="from">{e(t["pkFrom"])}</span><b>{e(p["price"])}</b><span class="per">{e(p["per"])}</span></div>
+<ul class="checks">{items}</ul>
+<a class="btn {'btn-gold' if p["popular"] else 'btn-navy'}" href="#contact-{opt}">{e(t["pkCta"])}</a>
+</article>''')
+    svc = "".join(f'<div class="mini"><div class="ico sm">{svg(k, size=22)}</div><div><h3>{e(a)}</h3><p>{e(b)}</p></div></div>' for k, a, b in h["svc"])
+    faq = "\n".join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in h["faq"])
     options = "".join(f"<option>{e(o)}</option>" for o in t["options"])
     phone = e(CONTACT["phone_display"] or t["phoneFallback"])
+    float_btn = (f'<a class="float-wa" href="{e(wa)}" target="_blank" rel="noopener" aria-label="{e(h["ctaWa"])}">{WA_ICON}<span>{e(h["floatWa"])}</span></a>' if wa
+                 else f'<a class="float-wa" href="#contact">{WA_ICON}<span>{e(h["floatContact"])}</span></a>')
     body = f'''<section class="hero" id="top">
 <div class="wrap">
 <div class="col">
-<div class="eyebrow">Media · Technology · Business</div>
-<h1 lang="en">Stories That Connect.<br><span>Solutions That Work.</span></h1>
-<p class="lead">{e(t["heroText"])}</p>
-<div class="actions"><a class="btn btn-gold" href="#contact">{e(t["heroCta1"])}</a><a class="btn btn-ghost" href="{rel(me, PAGES["packages"][lang])}">{e(t["heroCta2"])}</a></div>
+<div class="eyebrow" lang="en">{e(h["eyebrow"])}</div>
+<h1>{e(h["h1a"])} <span>{e(h["h1b"])}</span> {e(h["h1c"])}</h1>
+<p class="lead">{e(h["lead"])}</p>
+<div class="actions">{cta_main}<a class="btn btn-ghost" href="#comment">{e(h["ctaHow"])}</a></div>
 </div>
-<div class="col" style="gap:16px">
-<div class="photo">{e(t["heroPhoto"])}</div>
-<div class="dash">
-<div class="dash-h"><span>{e(t["dashTitle"])}</span><span class="live">{e(t["dashLive"])}</span></div>
-<div class="kpis"><div><b>374</b><span>{e(t["dashReg"])}</span></div><div><b>188</b><span>{e(t["dashPresent"])}</span></div><div><b>675</b><span>Messages</span></div></div>
+<div class="col reel-col">
+<div class="reel" role="img" aria-label="{e(h["reel"])}"><span class="play" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0F172A"><polygon points="7 4 20 12 7 20"/></svg></span><span>{e(h["reel"])}</span></div>
 </div>
 </div>
-</div>
+<div class="wrap trust"><span>{e(h["trust"])}</span><ul>{trust}</ul></div>
 </section>
-<section class="services" id="services">
+<section id="comment">
 <div class="wrap">
-<div class="head"><span class="eyebrow">{e(t["svcEyebrow"])}</span><h2>{e(t["svcTitle"])}</h2><p class="lead">{e(t["svcText"])}</p></div>
-<div class="cards">
-{services}
-</div>
-</div>
-</section>
-<section id="evenement">
-<div class="wrap">
-<div class="pack-h">
-<div class="head"><span class="eyebrow">{e(t["packEyebrow"])}</span><h2>{e(t["packTitle"])}</h2><p class="lead">{e(t["packText"])}</p></div>
-<a class="btn btn-navy" href="{rel(me, PAGES["packages"][lang])}">{e(t["packCta"])}</a>
-</div>
-<ol class="steps">
-{steps}
+<div class="head center"><span class="eyebrow">{e(h["howEyebrow"])}</span><h2>{e(h["howTitle"])}</h2><p class="lead">{e(h["howLead"])}</p></div>
+<ol class="how">
+{how}
 </ol>
 </div>
 </section>
-<section class="case" id="realisations">
-<div class="wrap">
-<div class="col"><span class="eyebrow">{e(t["caseEyebrow"])}</span><h2>Bwat Sekrèm Talks</h2><p class="lead">{e(t["caseText"])}</p><a class="more" href="{rel(me, PAGES["work"][lang])}">{e(t["caseCta"])}</a></div>
+<section class="case" id="preuve">
+<div class="wrap proof">
+<div class="col"><span class="eyebrow">{e(h["proofEyebrow"])}</span><h2>{e(h["proofTitle"])}</h2><p class="lead">{e(h["proofText"])}</p>
+<figure class="quote"><blockquote>{e(h["quote"])}</blockquote><figcaption><b>{e(h["quoteWho"])}</b> · {e(h["quoteRole"])}</figcaption></figure>
+<a class="more" href="{rel(me, PAGES["work"][lang])}">{e(h["proofCta"])}</a></div>
 <div class="stats">
 {stats_html(t)}
+</div>
+</div>
+<div class="wrap photos">{photos}</div>
+</section>
+<section class="services" id="forfaits">
+<div class="wrap">
+<div class="head center"><span class="eyebrow">{e(h["pkEyebrow"])}</span><h2>{e(h["pkTitle"])}</h2><p class="lead">{e(h["pkLead"])}</p></div>
+<div class="plans plans-3">
+{"".join(plans)}
+</div>
+<p class="center-link"><a class="dark-link" href="{rel(me, PAGES["packages"][lang])}">{e(h["pkAll"])}</a></p>
+</div>
+</section>
+<section id="services">
+<div class="wrap">
+<div class="head"><span class="eyebrow">{e(h["svcEyebrow"])}</span><h2>{e(h["svcTitle"])}</h2></div>
+<div class="minis">{svc}</div>
+</div>
+</section>
+<section class="services">
+<div class="wrap narrow">
+<h2>{e(h["faqTitle"])}</h2>
+<div class="faq">
+{faq}
 </div>
 </div>
 </section>
 <section class="contact" id="contact">
 <div class="wrap">
-<div class="col" style="flex-basis:380px"><span class="eyebrow">Contact</span><h2>{e(t["contactTitle"])}</h2><p class="lead">{e(t["contactText"])}</p>
+<div class="col" style="flex-basis:380px"><span class="eyebrow">Contact</span><h2>{e(h["finalTitle"])}</h2><p class="lead">{e(h["finalText"])}</p>
+{cta_main if wa else ""}
 <div class="info"><span>{phone}</span><a href="mailto:{e(CONTACT["email"])}">{e(CONTACT["email"])}</a><span>{e(t["city"])}</span></div></div>
 <form id="quote" data-email="{e(CONTACT["email"])}" data-wa="{e(CONTACT["whatsapp"])}" data-intro="{e(t["msgIntro"])}" data-subject="{e(t["msgSubject"])}">
 <div class="row"><label>{e(t["fName"])}<input name="name" type="text" autocomplete="name" required></label><label>{e(t["fCompany"])}<input name="company" type="text" autocomplete="organization"></label></div>
@@ -375,8 +528,10 @@ def home(lang):
 <button class="btn btn-navy" type="submit">{e(t["fSend"])}</button>
 </form>
 </div>
-</section>'''
+</section>
+{float_btn}'''
     return layout(lang, "home", t["homeTitle"], t["homeDesc"], body)
+
 
 def packages(lang):
     t = T[lang]; me = PAGES["packages"][lang]; home_ = PAGES["home"][lang]
