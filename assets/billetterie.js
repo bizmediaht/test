@@ -89,7 +89,7 @@
   async function pageShop() {
     var app = $('#app'); msg(app, L.loading);
     var slug = param('e');
-    var q = sb.from('events').select('id, slug, title, description, venue, starts_at, payment_number, payment_methods, questions, organizations(slug, name, logo_url, brand_color, accent_color), ticket_types(id, name, description, price_htg, sort)').eq('is_published', true).order('starts_at');
+    var q = sb.from('events').select('id, slug, title, description, venue, starts_at, payment_number, payment_methods, questions, organizations(slug, name, logo_url, brand_color, accent_color), ticket_types(id, name, description, price_htg, sort, questions)').eq('is_published', true).order('starts_at');
     var orgSlug = body.getAttribute('data-org');
     var res = slug ? await q.eq('slug', slug) : await q;
     if (res.error) return msg(app, L.errGeneric, 'err');
@@ -131,9 +131,10 @@
     var payBox;
     function isFree() { var sel = $('input[name=tt]:checked', typeBox); return !!sel && Number(sel.getAttribute('data-price')) === 0; }
     function answers() {
-      var a = {}; (ev.questions || []).forEach(function (qq) { var v = form['q_' + qq.id].value.trim(); if (v) a[qq.id] = v; }); return a;
+      var a = {}; currentQuestions().forEach(function (qq) { var v = form['q_' + qq.id].value.trim(); if (v) a[qq.id] = v; }); return a;
     }
     function update() {
+      renderQuestions();
       var free = isFree();
       if (payBox) { payBox.hidden = free; payRow.hidden = free; proofRow.hidden = free; form.ref.required = !free; $('button[type=submit]', form).textContent = free ? L.sendFree : L.submit; freeNote.hidden = !free; }
       var sel = $('input[name=tt]:checked', typeBox);
@@ -144,12 +145,24 @@
     typeBox.addEventListener('change', update); qty.addEventListener('change', update);
 
     var status = h('div', { 'aria-live': 'polite' });
-    var questions = (ev.questions || []).map(function (qq) {
-      var input = qq.type === 'select'
-        ? h('select', { name: 'q_' + qq.id, required: !!qq.required }, [h('option', { value: '', text: L.choose })].concat((qq.options || []).map(function (o) { return h('option', { value: o, text: o }); })))
-        : h('input', { name: 'q_' + qq.id, required: !!qq.required, maxlength: 200 });
-      return h('label', null, [qq.label + (qq.required ? '' : (EN ? ' (optional)' : ' (facultatif)')), input]);
-    });
+    var qBox = h('div', { class: 'q-grid' }), qShown = null;
+    function currentQuestions() {
+      var sel = $('input[name=tt]:checked', typeBox);
+      var tt = sel && types.filter(function (x) { return x.id === sel.value; })[0];
+      return (tt && tt.questions) || ev.questions || [];
+    }
+    function renderQuestions() {
+      var list = currentQuestions();
+      if (list === qShown) return;
+      qShown = list;
+      qBox.replaceChildren.apply(qBox, list.map(function (qq) {
+        var input = qq.type === 'select'
+          ? h('select', { name: 'q_' + qq.id, required: !!qq.required }, [h('option', { value: '', text: L.choose })].concat((qq.options || []).map(function (o) { return h('option', { value: o, text: o }); })))
+          : h('input', { name: 'q_' + qq.id, required: !!qq.required, maxlength: 200 });
+        return h('label', null, [qq.label + (qq.required ? '' : (EN ? ' (optional)' : ' (facultatif)')), input]);
+      }));
+      qBox.hidden = !list.length;
+    }
     var payRow = h('div', { class: 'row' }, [
         h('label', null, [L.method, h('select', { name: 'method' }, methods.map(function (m) { return h('option', { value: m, text: m }); }))]),
         h('label', null, [L.ref, h('input', { name: 'ref', required: true, maxlength: 80 })])
@@ -160,7 +173,7 @@
         h('label', null, [L.name, h('input', { name: 'name', required: true, autocomplete: 'name', minlength: 2, maxlength: 120 })]),
         h('label', null, [L.phone, h('input', { name: 'phone', type: 'tel', required: true, autocomplete: 'tel', placeholder: '+509', minlength: 8, maxlength: 20 })])
       ]),
-      questions.length ? h('div', { class: 'q-grid' }, questions) : null,
+      qBox,
       payRow, proofRow,
       h('label', null, [L.email, h('input', { name: 'email', type: 'email', autocomplete: 'email', maxlength: 160 })]),
       h('label', { class: 'consent' }, [h('input', { type: 'checkbox', name: 'cEvent', required: true }), h('span', { text: L.cEvent(org) })]),
