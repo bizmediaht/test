@@ -309,6 +309,7 @@ def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False):
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){{v.pause();v.removeAttribute('autoplay')}});
+(function(){{var it=document.querySelectorAll('.rot-i');if(it.length<2||matchMedia('(prefers-reduced-motion: reduce)').matches)return;var i=0;setInterval(function(){{it[i].classList.remove('on');i=(i+1)%it.length;it[i].classList.add('on');}},3200);}})();
 var q=document.getElementById('quote');
 if(q)q.addEventListener('submit',function(ev){{
   ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){{return f.elements[n].value.trim()}};
@@ -337,8 +338,10 @@ def stats_html(t):
 HOME = {
 "fr": dict(
     eyebrow="Stories That Connect. Solutions That Work.",
-    h1a="Votre événement :", h1b="plus d’inscrits, zéro désordre", h1c="et des images dont vous serez fiers.",
-    lead="Inscriptions en ligne, confirmations WhatsApp, pointage à l’entrée, couverture photo & vidéo et rapport final. Une seule équipe s’occupe de tout, avant, pendant et après.",
+    h1a="Votre événement :",
+    rot=["une salle pleine, avec le bon public.", "des billets vendus par MonCash, sans stress.", "zéro désordre à l’entrée.",
+         "chaque participant suivi, de l’inscription au certificat.", "des images dont vous serez fiers."],
+    lead="Inscriptions en ligne, billetterie MonCash / NatCash, confirmations WhatsApp, pointage à l’entrée, couverture photo & vidéo et rapport final. Une seule équipe s’occupe de tout, avant, pendant et après.",
     ctaWa="Écrivez-nous sur WhatsApp", ctaForm="Demander un devis", ctaHow="Voir comment ça marche",
     reel="[ Showreel vidéo 30–60 s ]", reelLabel="Showreel BiZ Media",
     trust="Système déjà utilisé pour Bwat Sekrèm Talks",
@@ -381,8 +384,10 @@ HOME = {
 ),
 "en": dict(
     eyebrow="Stories That Connect. Solutions That Work.",
-    h1a="Your event:", h1b="more sign-ups, zero chaos at the door", h1c="and images you’ll be proud of.",
-    lead="Online registration, WhatsApp confirmations, check-in at the door, photo & video coverage and a final report. One team handles it all, before, during and after.",
+    h1a="Your event:",
+    rot=["a full room, with the right audience.", "tickets sold via MonCash, stress-free.", "zero chaos at the door.",
+         "every attendee followed, from sign-up to certificate.", "images you’ll be proud of."],
+    lead="Online registration, MonCash / NatCash ticketing, WhatsApp confirmations, check-in at the door, photo & video coverage and a final report. One team handles it all, before, during and after.",
     ctaWa="Message us on WhatsApp", ctaForm="Get a quote", ctaHow="See how it works",
     reel="[ Video showreel 30–60 s ]", reelLabel="BiZ Media showreel",
     trust="System already used for Bwat Sekrèm Talks",
@@ -499,7 +504,7 @@ def home(lang):
 <div class="wrap">
 <div class="col">
 <div class="eyebrow" lang="en">{e(h["eyebrow"])}</div>
-<h1>{e(h["h1a"])} <span>{e(h["h1b"])}</span> {e(h["h1c"])}</h1>
+<h1>{e(h["h1a"])} <span class="sr-only">{e(" ".join(h["rot"]))}</span><span class="rot" aria-hidden="true">{"".join(f'<span class="rot-i{" on" if i == 0 else ""}">{e(x)}</span>' for i, x in enumerate(h["rot"]))}</span></h1>
 <p class="lead">{e(h["lead"])}</p>
 <div class="actions">{cta_main}<a class="btn btn-ghost" href="#comment">{e(h["ctaHow"])}</a></div>
 </div>
