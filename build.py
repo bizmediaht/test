@@ -221,6 +221,12 @@ T = {
 
 def e(s): return escape(s, quote=True)
 
+import hashlib
+def v(path):
+    """Version d'un fichier (empreinte de son contenu) pour forcer le rechargement après une mise à jour."""
+    p = Path(__file__).parent / path
+    return path + "?v=" + hashlib.sha1(p.read_bytes()).hexdigest()[:8] if p.exists() else path
+
 # Photos réelles — Bwat Sekrèm Talks
 PHOTOS = {
     "fr": [("bst-certificats", "Remise des certificats aux intervenants, avec l’équipe Bwat Sekrèm sur scène"),
@@ -277,7 +283,7 @@ def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="{root}assets/style.css">{'<meta name="robots" content="noindex">' if noindex else ""}
+<link rel="stylesheet" href="{root}{v("assets/style.css")}">{'<meta name="robots" content="noindex">' if noindex else ""}
 </head>
 <body{f' data-page="{page}" data-root="{root}"' if page else ""}>
 <a class="skip" href="#main">{e(t["skip"])}</a>
@@ -304,7 +310,7 @@ def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False):
 <main id="main">
 {body}
 </main>
-{"".join(f'<script src="{src if src.startswith("http") else root + src}"></script>' for src in scripts)}
+{"".join(f'<script src="{src if src.startswith("http") else root + v(src)}"></script>' for src in scripts)}
 <footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
@@ -702,7 +708,7 @@ def admin_page(depth, page, title):
 <title>{e(title)} — BiZ Media</title>
 <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="{root}assets/style.css">
+<link rel="stylesheet" href="{root}{v("assets/style.css")}">
 </head>
 <body data-page="{page}" data-root="{root}" class="adm">
 <header><div class="wrap nav">
@@ -714,7 +720,7 @@ def admin_page(depth, page, title):
 <main id="main"><section class="services app-sec"><div class="wrap"><div id="app"><p class="note">Chargement…</p></div></div></section></main>
 <script src="{SB_JS}"></script>
 {f'<script src="{SCAN_JS}"></script>' if page == "scan" else ""}
-<script src="{root}assets/admin.js"></script>
+<script src="{root}{v("assets/admin.js")}"></script>
 </body>
 </html>
 '''
