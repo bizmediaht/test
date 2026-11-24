@@ -63,15 +63,12 @@
 <li><span class="n">04</span><h3>Wrap-up</h3><p>Content delivery and final report.</p></li>
 </ol>
 </div></section>
-<section class="services"><div class="wrap">
-<div class="head"><h2>The team</h2></div>
-<div class="team"><div class="member"><div class="avatar" aria-hidden="true"></div><b>[Name]</b><span>[Role]</span></div><div class="member"><div class="avatar" aria-hidden="true"></div><b>[Name]</b><span>[Role]</span></div><div class="member"><div class="avatar" aria-hidden="true"></div><b>[Name]</b><span>[Role]</span></div></div>
-</div></section>
 <section class="case cta-band"><div class="wrap"><h2>Your project could be next.</h2><a class="btn btn-gold" href="../../en/#contact">Let’s talk</a></div></section>
 </main>
-<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl"><a href="../../en/packages/">Packages</a> · <a href="../../en/work/">Our Work</a> · <a href="../../en/about/">About</a></span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
+<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl"><a href="../../en/packages/">Packages</a> · <a href="../../en/work/">Our Work</a> · <a href="../../en/about/">About</a></span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span><span class="c note">Photos and video: illustrative images.</span></div></footer>
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){v.pause();v.removeAttribute('autoplay')});
 var q=document.getElementById('quote');
 if(q)q.addEventListener('submit',function(ev){
   ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){return f.elements[n].value.trim()};

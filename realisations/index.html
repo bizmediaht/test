@@ -67,13 +67,14 @@
 </div></section>
 <section><div class="wrap">
 <h2>Galerie</h2>
-<div class="gallery"><div class="ph">[ Photo ]</div><div class="ph">[ Photo ]</div><div class="ph">[ Photo ]</div><div class="ph">[ Photo ]</div><div class="ph">[ Photo ]</div><div class="ph">[ Photo ]</div></div>
+<div class="gallery"><img src="../assets/img/conference-sm.jpg" srcset="../assets/img/conference-sm.jpg 640w, ../assets/img/conference.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357"><img src="../assets/img/videographer-sm.jpg" srcset="../assets/img/videographer-sm.jpg 640w, ../assets/img/videographer.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357"><img src="../assets/img/checkin-sm.jpg" srcset="../assets/img/checkin-sm.jpg 640w, ../assets/img/checkin.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357"><img src="../assets/img/audience-sm.jpg" srcset="../assets/img/audience-sm.jpg 640w, ../assets/img/audience.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357"><img src="../assets/img/networking-sm.jpg" srcset="../assets/img/networking-sm.jpg 640w, ../assets/img/networking.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357"><img src="../assets/img/interview-sm.jpg" srcset="../assets/img/interview-sm.jpg 640w, ../assets/img/interview.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357"></div>
 </div></section>
 <section class="case cta-band"><div class="wrap"><h2>Votre projet pourrait être le prochain.</h2><a class="btn btn-gold" href="../#contact">Parlons-en</a></div></section>
 </main>
-<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl"><a href="../forfaits/">Forfaits</a> · <a href="../realisations/">Réalisations</a> · <a href="../a-propos/">À propos</a></span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
+<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl"><a href="../forfaits/">Forfaits</a> · <a href="../realisations/">Réalisations</a> · <a href="../a-propos/">À propos</a></span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span><span class="c note">Photos et vidéo : images d’illustration.</span></div></footer>
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){v.pause();v.removeAttribute('autoplay')});
 var q=document.getElementById('quote');
 if(q)q.addEventListener('submit',function(ev){
   ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){return f.elements[n].value.trim()};

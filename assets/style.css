@@ -232,3 +232,10 @@ footer .fl a{color:#CBD5E1;text-decoration:none}footer .fl a:hover{color:#fff}
 .float-wa{position:fixed;right:20px;bottom:20px;z-index:20;display:flex;align-items:center;gap:8px;background:#25D366;color:#0B3B1F;font-weight:800;text-decoration:none;padding:14px 18px;border-radius:999px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);min-height:48px}
 .float-wa:hover{background:#1EBE5A;color:#0B3B1F}
 @media (max-width:720px){.how{gap:48px}.how-vis{padding:28px 16px}.float-wa span{display:none}.float-wa{padding:14px}.trust{margin-top:40px}}
+
+/* ---- Images & vidéo ---- */
+.reel{padding:0;overflow:hidden;background:#0B1220}
+.reel video{width:100%;height:100%;object-fit:cover;display:block}
+.case .photos img,.gallery img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:16px;display:block}
+.info a{color:#334155;font-weight:700}
+footer .note{flex-basis:100%;font-size:12px;color:#94A3B8}

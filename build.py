@@ -7,9 +7,9 @@ from pathlib import Path
 
 SITE_URL = "https://bizmedia.ht"
 CONTACT = {
-    "email": "contact@bizmedia.ht",   # TODO : adresse réelle
-    "whatsapp": "",                    # TODO : numéro au format 509XXXXXXXX (vide = formulaire par e-mail)
-    "phone_display": "",               # TODO : ex. +509 XX XX XXXX
+    "email": "",                       # TODO : adresse e-mail (vide = non affichée)
+    "whatsapp": "50949012257",         # numéro WhatsApp au format international, sans +
+    "phone_display": "+509 4901-2257",
 }
 
 # Chemin de chaque page, par langue
@@ -33,7 +33,7 @@ T = {
 "fr": dict(
     htmllang="fr", skip="Aller au contenu", navLabel="Navigation principale", langLabel="Langue",
     nav=dict(services="Services", packages="Forfaits", work="Réalisations", about="À propos", quote="Demander un devis"),
-    footerLinks="Pages",
+    footerLinks="Pages", illus="Photos et vidéo : images d’illustration.",
     # ---------- Accueil ----------
     homeTitle="BiZ Media — Photo, vidéo, production & solutions digitales en Haïti",
     homeDesc="BiZ Media : photographie, vidéo, production, CRM et automatisation pour les entreprises et les événements en Haïti.",
@@ -74,18 +74,18 @@ T = {
     pkLead="Choisissez une base, nous l’adaptons à votre événement ou à votre entreprise. Chaque projet commence par un appel gratuit.",
     pkPopular="Le plus demandé", pkFrom="À partir de", pkQuote="Sur devis", pkCta="Choisir ce forfait",
     packages=[
-        dict(name="Pack Événement Essentiel", price="[Prix] HTG", per="par événement", popular=False,
+        dict(name="Pack Événement Essentiel", price=None, per="Devis gratuit", popular=False,
              desc="Le système digital, sans la couverture média.",
              items=["Page & formulaire d’inscription", "Confirmations et relances automatiques", "Liste d’attente et gestion des places", "Pointage à l’entrée", "Rapport de participation"]),
-        dict(name="Pack Événement Complet", price="[Prix] HTG", per="par événement", popular=True,
+        dict(name="Pack Événement Complet", price=None, per="Devis gratuit", popular=True,
              desc="Le système digital + la couverture photo & vidéo.",
              items=["Tout le Pack Essentiel", "Photographe & vidéaste le jour J", "Vidéo highlights pour réseaux sociaux", "Certificats de participation", "Suivi CRM après l’événement"]),
-        dict(name="Couverture Média", price="[Prix] HTG", per="par demi-journée", popular=False,
+        dict(name="Couverture Média", price=None, per="Devis gratuit", popular=False,
              desc="Photo et vidéo professionnelles pour un événement.",
-             items=["Photographe professionnel", "Captation vidéo", "Photos retouchées sous [X] jours", "Vidéo récapitulative", "Livraison en ligne"]),
-        dict(name="Contenu mensuel", price="[Prix] HTG", per="par mois", popular=False,
+             items=["Photographe professionnel", "Captation vidéo", "Photos retouchées et livrées rapidement", "Vidéo récapitulative", "Livraison en ligne"]),
+        dict(name="Contenu mensuel", price=None, per="Devis gratuit", popular=False,
              desc="Pour les entreprises qui communiquent chaque mois.",
-             items=["[X] séances photo / vidéo", "Contenus pour réseaux sociaux", "Interviews & portraits d’équipe", "Calendrier de publication", "Bilan mensuel"]),
+             items=["Séances photo / vidéo chaque mois", "Contenus pour réseaux sociaux", "Interviews & portraits d’équipe", "Calendrier de publication", "Bilan mensuel"]),
     ],
     customTitle="Besoin d’autre chose ?",
     customText="Documentaire, spot publicitaire, CRM pour votre entreprise, automatisation WhatsApp… Nous construisons une offre sur mesure.",
@@ -127,7 +127,7 @@ T = {
 "en": dict(
     htmllang="en", skip="Skip to content", navLabel="Main navigation", langLabel="Language",
     nav=dict(services="Services", packages="Packages", work="Our Work", about="About", quote="Get a quote"),
-    footerLinks="Pages",
+    footerLinks="Pages", illus="Photos and video: illustrative images.",
     homeTitle="BiZ Media — Photo, video, production & digital solutions in Haiti",
     homeDesc="BiZ Media: photography, video, production, CRM and automation for businesses and events in Haiti.",
     heroText="Photo, video, production and digital systems — CRM, registrations, automation — all under one roof for businesses and events in Haiti.",
@@ -166,18 +166,18 @@ T = {
     pkLead="Pick a starting point and we tailor it to your event or business. Every project starts with a free call.",
     pkPopular="Most requested", pkFrom="From", pkQuote="On request", pkCta="Choose this package",
     packages=[
-        dict(name="Essential Event Package", price="[Price] HTG", per="per event", popular=False,
+        dict(name="Essential Event Package", price=None, per="Free quote", popular=False,
              desc="The digital system, without media coverage.",
              items=["Registration page & form", "Automatic confirmations and reminders", "Waitlist and seat management", "Check-in at the door", "Attendance report"]),
-        dict(name="Complete Event Package", price="[Price] HTG", per="per event", popular=True,
+        dict(name="Complete Event Package", price=None, per="Free quote", popular=True,
              desc="The digital system + photo & video coverage.",
              items=["Everything in Essential", "Photographer & videographer on the day", "Highlight video for social media", "Attendance certificates", "Post-event CRM follow-up"]),
-        dict(name="Media Coverage", price="[Price] HTG", per="per half-day", popular=False,
+        dict(name="Media Coverage", price=None, per="Free quote", popular=False,
              desc="Professional photo and video for an event.",
-             items=["Professional photographer", "Video capture", "Edited photos within [X] days", "Recap video", "Online delivery"]),
-        dict(name="Monthly Content", price="[Price] HTG", per="per month", popular=False,
+             items=["Professional photographer", "Video capture", "Edited photos, delivered fast", "Recap video", "Online delivery"]),
+        dict(name="Monthly Content", price=None, per="Free quote", popular=False,
              desc="For businesses that communicate every month.",
-             items=["[X] photo / video sessions", "Social media content", "Interviews & team portraits", "Publishing calendar", "Monthly report"]),
+             items=["Monthly photo / video sessions", "Social media content", "Interviews & team portraits", "Publishing calendar", "Monthly report"]),
     ],
     customTitle="Need something else?",
     customText="Documentary, commercial, a CRM for your business, WhatsApp automation… We build a custom offer.",
@@ -217,6 +217,9 @@ T = {
 }
 
 def e(s): return escape(s, quote=True)
+
+def root_of(path):
+    return "../" * path.count("/")
 
 def rel(frm, to, anchor=""):
     """Lien relatif de la page `frm` vers la page `to` (chemins de PAGES)."""
@@ -283,9 +286,10 @@ def layout(lang, key, title, desc, body):
 <main id="main">
 {body}
 </main>
-<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
+<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span><span class="c note">{e(t["illus"])}</span></div></footer>
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){{v.pause();v.removeAttribute('autoplay')}});
 var q=document.getElementById('quote');
 if(q)q.addEventListener('submit',function(ev){{
   ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){{return f.elements[n].value.trim()}};
@@ -317,7 +321,7 @@ HOME = {
     h1a="Votre événement :", h1b="plus d’inscrits, zéro désordre", h1c="et des images dont vous serez fiers.",
     lead="Inscriptions en ligne, confirmations WhatsApp, pointage à l’entrée, couverture photo & vidéo et rapport final. Une seule équipe s’occupe de tout, avant, pendant et après.",
     ctaWa="Écrivez-nous sur WhatsApp", ctaForm="Demander un devis", ctaHow="Voir comment ça marche",
-    reel="[ Showreel vidéo 30–60 s ]", reelLabel="Lire le showreel",
+    reel="[ Showreel vidéo 30–60 s ]", reelLabel="Showreel BiZ Media",
     trust="Système déjà utilisé pour Bwat Sekrèm Talks",
     trustStats=[("374", "inscrits"), ("188", "présents pointés"), ("675", "messages envoyés")],
     howEyebrow="Comment ça marche", howTitle="Vous organisez. Nous gérons le reste.",
@@ -333,8 +337,8 @@ HOME = {
              text="Les participants reçoivent leur certificat. Vous recevez les photos, la vidéo highlights et un rapport complet de votre événement.",
              points=["Certificats envoyés", "Photos & vidéo livrées", "Rapport de participation"]),
     ],
-    mForm=dict(title="Inscription — [Votre événement]", name="Nom complet", phone="WhatsApp", btn="Je m’inscris"),
-    mWa=dict(head="BiZ Événements", msg="Bonjour Nadia Votre inscription à [Votre événement] est confirmée. Rendez-vous le [date] à [heure]. Présentez ce message à l’entrée.", time="09:41", reply="Merci !"),
+    mForm=dict(title="Inscription — Forum Business 2026", name="Nom complet", phone="WhatsApp", btn="Je m’inscris"),
+    mWa=dict(head="BiZ Événements", msg="Bonjour Nadia Votre inscription au Forum Business 2026 est confirmée. Rendez-vous samedi à 9 h. Présentez ce message à l’entrée.", time="09:41", reply="Merci !"),
     mDash=dict(title="Tableau de bord", live="En direct", reg="Inscrits", here="Présents", rate="Taux de présence", recent="Derniers arrivés"),
     proofEyebrow="La preuve", proofTitle="Bwat Sekrèm Talks : un système, des centaines de participants.",
     proofText="Inscriptions, confirmations, liste d’attente, pointage, certificats et suivi de chaque participant : tout a été conçu et opéré par notre équipe.",
@@ -361,7 +365,7 @@ HOME = {
     h1a="Your event:", h1b="more sign-ups, zero chaos at the door", h1c="and images you’ll be proud of.",
     lead="Online registration, WhatsApp confirmations, check-in at the door, photo & video coverage and a final report. One team handles it all, before, during and after.",
     ctaWa="Message us on WhatsApp", ctaForm="Get a quote", ctaHow="See how it works",
-    reel="[ Video showreel 30–60 s ]", reelLabel="Play the showreel",
+    reel="[ Video showreel 30–60 s ]", reelLabel="BiZ Media showreel",
     trust="System already used for Bwat Sekrèm Talks",
     trustStats=[("374", "registered"), ("188", "checked in"), ("675", "messages sent")],
     howEyebrow="How it works", howTitle="You host. We handle the rest.",
@@ -377,8 +381,8 @@ HOME = {
              text="Attendees receive their certificate. You receive the photos, the highlight video and a full report of your event.",
              points=["Certificates sent", "Photos & video delivered", "Attendance report"]),
     ],
-    mForm=dict(title="Registration — [Your event]", name="Full name", phone="WhatsApp", btn="Register"),
-    mWa=dict(head="BiZ Events", msg="Hi Nadia Your registration for [Your event] is confirmed. See you on [date] at [time]. Show this message at the door.", time="09:41", reply="Thanks!"),
+    mForm=dict(title="Registration — Business Forum 2026", name="Full name", phone="WhatsApp", btn="Register"),
+    mWa=dict(head="BiZ Events", msg="Hi Nadia Your registration for Business Forum 2026 is confirmed. See you Saturday at 9 am. Show this message at the door.", time="09:41", reply="Thanks!"),
     mDash=dict(title="Dashboard", live="Live", reg="Registered", here="Checked in", rate="Attendance rate", recent="Latest arrivals"),
     proofEyebrow="The proof", proofTitle="Bwat Sekrèm Talks: one system, hundreds of attendees.",
     proofText="Registrations, confirmations, waitlist, check-in, certificates and follow-up for every attendee: all designed and run by our team.",
@@ -404,11 +408,22 @@ HOME = {
 
 WA_ICON = '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>'
 
+def price_html(t, p):
+    if p["price"]:
+        return f'<span class="from">{e(t["pkFrom"])}</span><b>{e(p["price"])}</b><span class="per">{e(p["per"])}</span>'
+    return f'<b>{e(t["pkQuote"])}</b><span class="per">{e(p["per"])}</span>'
+
 def wa_link(lang):
     if not CONTACT["whatsapp"]:
         return None
     from urllib.parse import quote
     return f'https://wa.me/{CONTACT["whatsapp"]}?text={quote(T[lang]["msgIntro"])}'
+
+def quote_html(h):
+    q = h.get("quote") or ""
+    if not q or q.startswith("["):
+        return ""
+    return f'<figure class="quote"><blockquote>{e(q)}</blockquote><figcaption><b>{e(h["quoteWho"])}</b> · {e(h["quoteRole"])}</figcaption></figure>'
 
 def home(lang):
     t = T[lang]; h = HOME[lang]; me = PAGES["home"][lang]
@@ -442,7 +457,7 @@ def home(lang):
 <ul class="checks">{"".join(f'<li>{svg("check", "#B45309", 18)}<span>{e(p)}</span></li>' for p in s["points"])}</ul></div>
 <div class="how-vis">{mocks[i]}</div>
 </li>''' for i, s in enumerate(h["how"]))
-    photos = "".join(f'<div class="ph">{e(h["photosPh"])}</div>' for _ in range(3))
+    photos = "".join(f'<img src="{root_of(me)}assets/img/{n}-sm.jpg" srcset="{root_of(me)}assets/img/{n}-sm.jpg 640w, {root_of(me)}assets/img/{n}.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357">' for n in ("conference", "checkin", "certificate"))
     plans = []
     for i, p in enumerate(t["packages"][:3]):
         opt = {0: 1, 1: 0, 2: 2}[i]
@@ -450,14 +465,15 @@ def home(lang):
         items = "".join(f'<li>{svg("check", "#B45309", 18)}<span>{e(x)}</span></li>' for x in p["items"][:4])
         plans.append(f'''<article class="plan{' plan-pop' if p["popular"] else ''}">
 {badge}<h3 class="plan-h">{e(p["name"])}</h3><p class="pdesc">{e(p["desc"])}</p>
-<div class="price"><span class="from">{e(t["pkFrom"])}</span><b>{e(p["price"])}</b><span class="per">{e(p["per"])}</span></div>
+<div class="price">{price_html(t, p)}</div>
 <ul class="checks">{items}</ul>
 <a class="btn {'btn-gold' if p["popular"] else 'btn-navy'}" href="#contact-{opt}">{e(t["pkCta"])}</a>
 </article>''')
     svc = "".join(f'<div class="mini"><div class="ico sm">{svg(k, size=22)}</div><div><h3>{e(a)}</h3><p>{e(b)}</p></div></div>' for k, a, b in h["svc"])
-    faq = "\n".join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in h["faq"])
+    faq = "\n".join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in h["faq"] if not a.startswith("["))
     options = "".join(f"<option>{e(o)}</option>" for o in t["options"])
     phone = e(CONTACT["phone_display"] or t["phoneFallback"])
+    email_html = f'<a href="mailto:{e(CONTACT["email"])}">{e(CONTACT["email"])}</a>' if CONTACT["email"] else ""
     float_btn = (f'<a class="float-wa" href="{e(wa)}" target="_blank" rel="noopener" aria-label="{e(h["ctaWa"])}">{WA_ICON}<span>{e(h["floatWa"])}</span></a>' if wa
                  else f'<a class="float-wa" href="#contact">{WA_ICON}<span>{e(h["floatContact"])}</span></a>')
     body = f'''<section class="hero" id="top">
@@ -469,7 +485,7 @@ def home(lang):
 <div class="actions">{cta_main}<a class="btn btn-ghost" href="#comment">{e(h["ctaHow"])}</a></div>
 </div>
 <div class="col reel-col">
-<div class="reel" role="img" aria-label="{e(h["reel"])}"><span class="play" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="#0F172A"><polygon points="7 4 20 12 7 20"/></svg></span><span>{e(h["reel"])}</span></div>
+<div class="reel"><video autoplay muted loop playsinline preload="metadata" poster="{root_of(me)}assets/img/conference.jpg" aria-label="{e(h["reelLabel"])}"><source src="{root_of(me)}assets/showreel.mp4" type="video/mp4"></video></div>
 </div>
 </div>
 <div class="wrap trust"><span>{e(h["trust"])}</span><ul>{trust}</ul></div>
@@ -485,7 +501,7 @@ def home(lang):
 <section class="case" id="preuve">
 <div class="wrap proof">
 <div class="col"><span class="eyebrow">{e(h["proofEyebrow"])}</span><h2>{e(h["proofTitle"])}</h2><p class="lead">{e(h["proofText"])}</p>
-<figure class="quote"><blockquote>{e(h["quote"])}</blockquote><figcaption><b>{e(h["quoteWho"])}</b> · {e(h["quoteRole"])}</figcaption></figure>
+{quote_html(h)}
 <a class="more" href="{rel(me, PAGES["work"][lang])}">{e(h["proofCta"])}</a></div>
 <div class="stats">
 {stats_html(t)}
@@ -520,7 +536,7 @@ def home(lang):
 <div class="wrap">
 <div class="col" style="flex-basis:380px"><span class="eyebrow">Contact</span><h2>{e(h["finalTitle"])}</h2><p class="lead">{e(h["finalText"])}</p>
 {cta_main if wa else ""}
-<div class="info"><span>{phone}</span><a href="mailto:{e(CONTACT["email"])}">{e(CONTACT["email"])}</a><span>{e(t["city"])}</span></div></div>
+<div class="info"><a href="tel:+{e(CONTACT["whatsapp"])}">{phone}</a>{email_html}<span>{e(t["city"])}</span></div></div>
 <form id="quote" data-email="{e(CONTACT["email"])}" data-wa="{e(CONTACT["whatsapp"])}" data-intro="{e(t["msgIntro"])}" data-subject="{e(t["msgSubject"])}">
 <div class="row"><label>{e(t["fName"])}<input name="name" type="text" autocomplete="name" required></label><label>{e(t["fCompany"])}<input name="company" type="text" autocomplete="organization"></label></div>
 <div class="row"><label>{e(t["fPhone"])}<input name="phone" type="tel" autocomplete="tel"></label><label>{e(t["fService"])}<select name="service">{options}</select></label></div>
@@ -543,11 +559,11 @@ def packages(lang):
         opt = {0: 1, 1: 0, 2: 2, 3: 3}.get(i, 5)
         cards.append(f'''<article class="plan{' plan-pop' if p["popular"] else ''}">
 {badge}<h2>{e(p["name"])}</h2><p class="pdesc">{e(p["desc"])}</p>
-<div class="price"><span class="from">{e(t["pkFrom"])}</span><b>{e(p["price"])}</b><span class="per">{e(p["per"])}</span></div>
+<div class="price">{price_html(t, p)}</div>
 <ul class="checks">{items}</ul>
 <a class="btn {'btn-gold' if p["popular"] else 'btn-navy'}" href="{rel(me, home_, f"#contact-{opt}")}">{e(t["pkCta"])}</a>
 </article>''')
-    faq = "\n".join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in t["faq"])
+    faq = "\n".join(f'<details><summary>{e(q)}</summary><p>{e(a)}</p></details>' for q, a in t["faq"] if not a.startswith("["))
     body = f'''{page_hero(t["pkEyebrow"], t["pkH1"], t["pkLead"])}
 <section class="services"><div class="wrap">
 <div class="plans">
@@ -567,7 +583,7 @@ def packages(lang):
 def work(lang):
     t = T[lang]; me = PAGES["work"][lang]; home_ = PAGES["home"][lang]
     sol = "".join(f'<li>{svg("check", "#B45309", 18)}<span>{e(x)}</span></li>' for x in t["csSolution"])
-    gallery = "".join(f'<div class="ph">{e(t["galleryPh"])}</div>' for _ in range(6))
+    gallery = "".join(f'<img src="{root_of(me)}assets/img/{n}-sm.jpg" srcset="{root_of(me)}assets/img/{n}-sm.jpg 640w, {root_of(me)}assets/img/{n}.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357">' for n in ("conference", "videographer", "checkin", "audience", "networking", "interview"))
     body = f'''{page_hero(t["wkEyebrow"], t["wkH1"], t["wkLead"])}
 <section class="services"><div class="wrap">
 <div class="cs">
@@ -612,10 +628,6 @@ def about(lang):
 <ol class="steps steps-4">
 {how}
 </ol>
-</div></section>
-<section class="services"><div class="wrap">
-<div class="head"><h2>{e(t["teamTitle"])}</h2></div>
-<div class="team">{team}</div>
 </div></section>
 <section class="case cta-band"><div class="wrap"><h2>{e(t["moreTitle"])}</h2><a class="btn btn-gold" href="{rel(me, home_, "#contact")}">{e(t["moreCta"])}</a></div></section>'''
     return layout(lang, "about", t["abTitle"], t["abDesc"], body)
