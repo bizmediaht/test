@@ -8,6 +8,7 @@ Site vitrine bilingue (FR / EN) de **BiZ Media** — *Stories That Connect. Solu
 | Forfaits / Packages | `forfaits/` | `en/packages/` |
 | Réalisations / Our Work | `realisations/` | `en/work/` |
 | À propos / About | `a-propos/` | `en/about/` |
+| Billetterie / Tickets | `billetterie/` | `en/tickets/` |
 
 - `assets/` : styles, logo, favicon, image de partage
 
@@ -26,3 +27,13 @@ python3 build.py
 Hébergé avec GitHub Pages (branche `main`, dossier racine).
 Pour le domaine `bizmedia.ht` : ajouter un fichier `CNAME` contenant `bizmedia.ht`
 et configurer le DNS chez le registrar.
+
+## Billetterie
+
+Paiement MonCash / NatCash envoyé par le client, vérifié à la main, puis billet avec QR code.
+
+- Base de données : projet Supabase **BiZ Media** (`sljzkbcpkecpvvpzskxa`)
+- `billetterie/?e=<slug>` : achat d'un billet · `billetterie/commande/?t=<jeton>` : suivi de commande · `billet/?c=<code>` : billet
+- `admin/` : validation des paiements et envoi des billets sur WhatsApp · `admin/scan/` : scanner à l'entrée
+- Les événements et types de billets se créent dans Supabase (tables `events`, `ticket_types`).
+- Un administrateur = un compte Supabase Auth dont l'e-mail est dans la table `admins`.

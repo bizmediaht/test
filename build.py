@@ -18,6 +18,9 @@ PAGES = {
     "packages": {"fr": "forfaits/",     "en": "en/packages/"},
     "work":     {"fr": "realisations/", "en": "en/work/"},
     "about":    {"fr": "a-propos/",     "en": "en/about/"},
+    "tickets":  {"fr": "billetterie/",  "en": "en/tickets/"},
+    "order":    {"fr": "billetterie/commande/", "en": "en/tickets/order/"},
+    "ticket":   {"fr": "billet/",       "en": "en/ticket/"},
 }
 
 ICONS = {
@@ -32,7 +35,7 @@ NUMS = ["374", "188", "675", "2 684"]
 T = {
 "fr": dict(
     htmllang="fr", skip="Aller au contenu", navLabel="Navigation principale", langLabel="Langue",
-    nav=dict(services="Services", packages="Forfaits", work="Réalisations", about="À propos", quote="Demander un devis"),
+    nav=dict(services="Services", packages="Forfaits", work="Réalisations", about="À propos", tickets="Billetterie", quote="Demander un devis"),
     footerLinks="Pages", illus="Photos et vidéo : images d’illustration.",
     # ---------- Accueil ----------
     homeTitle="BiZ Media — Photo, vidéo, production & solutions digitales en Haïti",
@@ -76,7 +79,7 @@ T = {
     packages=[
         dict(name="Pack Événement Essentiel", price=None, per="Devis gratuit", popular=False,
              desc="Le système digital, sans la couverture média.",
-             items=["Page & formulaire d’inscription", "Confirmations et relances automatiques", "Liste d’attente et gestion des places", "Pointage à l’entrée", "Rapport de participation"]),
+             items=["Page & formulaire d’inscription", "Confirmations et relances automatiques", "Liste d’attente et gestion des places", "Billetterie MonCash / NatCash avec QR code", "Pointage à l’entrée", "Rapport de participation"]),
         dict(name="Pack Événement Complet", price=None, per="Devis gratuit", popular=True,
              desc="Le système digital + la couverture photo & vidéo.",
              items=["Tout le Pack Essentiel", "Photographe & vidéaste le jour J", "Vidéo highlights pour réseaux sociaux", "Certificats de participation", "Suivi CRM après l’événement"]),
@@ -126,7 +129,7 @@ T = {
 ),
 "en": dict(
     htmllang="en", skip="Skip to content", navLabel="Main navigation", langLabel="Language",
-    nav=dict(services="Services", packages="Packages", work="Our Work", about="About", quote="Get a quote"),
+    nav=dict(services="Services", packages="Packages", work="Our Work", about="About", tickets="Tickets", quote="Get a quote"),
     footerLinks="Pages", illus="Photos and video: illustrative images.",
     homeTitle="BiZ Media — Photo, video, production & digital solutions in Haiti",
     homeDesc="BiZ Media: photography, video, production, CRM and automation for businesses and events in Haiti.",
@@ -168,7 +171,7 @@ T = {
     packages=[
         dict(name="Essential Event Package", price=None, per="Free quote", popular=False,
              desc="The digital system, without media coverage.",
-             items=["Registration page & form", "Automatic confirmations and reminders", "Waitlist and seat management", "Check-in at the door", "Attendance report"]),
+             items=["Registration page & form", "Automatic confirmations and reminders", "Waitlist and seat management", "MonCash / NatCash ticketing with QR codes", "Check-in at the door", "Attendance report"]),
         dict(name="Complete Event Package", price=None, per="Free quote", popular=True,
              desc="The digital system + photo & video coverage.",
              items=["Everything in Essential", "Photographer & videographer on the day", "Highlight video for social media", "Attendance certificates", "Post-event CRM follow-up"]),
@@ -244,7 +247,7 @@ def rel(frm, to, anchor=""):
 def svg(name, color="#F5B841", size=26):
     return f'<svg aria-hidden="true" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{ICONS[name]}</svg>'
 
-def layout(lang, key, title, desc, body):
+def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False):
     t = T[lang]; me = PAGES[key][lang]; root = "../" * me.count("/")
     other = "en" if lang == "fr" else "fr"
     n = t["nav"]
@@ -252,7 +255,7 @@ def layout(lang, key, title, desc, body):
         cur = ' aria-current="page"' if k == key and not anchor else ''
         return f'<a class="l" href="{rel(me, PAGES[k][lang], anchor)}"{cur}>{e(label)}</a>'
     fr_href = rel(me, PAGES[key]["fr"]); en_href = rel(me, PAGES[key]["en"])
-    footer_links = " · ".join(f'<a href="{rel(me, PAGES[k][lang])}">{e(n[k])}</a>' for k in ("packages", "work", "about"))
+    footer_links = " · ".join(f'<a href="{rel(me, PAGES[k][lang])}">{e(n[k])}</a>' for k in ("packages", "work", "about", "tickets"))
     return f'''<!doctype html>
 <html lang="{t["htmllang"]}">
 <head>
@@ -274,9 +277,9 @@ def layout(lang, key, title, desc, body):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="{root}assets/style.css">
+<link rel="stylesheet" href="{root}assets/style.css">{'<meta name="robots" content="noindex">' if noindex else ""}
 </head>
-<body>
+<body{f' data-page="{page}" data-root="{root}"' if page else ""}>
 <a class="skip" href="#main">{e(t["skip"])}</a>
 <header>
 <div class="wrap nav">
@@ -289,6 +292,7 @@ def layout(lang, key, title, desc, body):
 {nl("packages", n["packages"])}
 {nl("work", n["work"])}
 {nl("about", n["about"])}
+{nl("tickets", n["tickets"])}
 <div class="lang" role="group" aria-label="{e(t["langLabel"])}">
 <a href="{fr_href}" lang="fr" hreflang="fr"{' aria-current="true"' if lang == "fr" else ''}>FR</a>
 <a href="{en_href}" lang="en" hreflang="en"{' aria-current="true"' if lang == "en" else ''}>EN</a>
@@ -300,6 +304,7 @@ def layout(lang, key, title, desc, body):
 <main id="main">
 {body}
 </main>
+{"".join(f'<script src="{src if src.startswith("http") else root + src}"></script>' for src in scripts)}
 <footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
@@ -646,7 +651,70 @@ def about(lang):
 <section class="case cta-band"><div class="wrap"><h2>{e(t["moreTitle"])}</h2><a class="btn btn-gold" href="{rel(me, home_, "#contact")}">{e(t["moreCta"])}</a></div></section>'''
     return layout(lang, "about", t["abTitle"], t["abDesc"], body)
 
-BUILDERS = {"home": home, "packages": packages, "work": work, "about": about}
+
+SB_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"
+QR_JS = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"
+SCAN_JS = "https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"
+
+TK = {
+    "fr": dict(shopT="Billetterie — BiZ Media", shopD="Achetez vos billets d’événements avec MonCash ou NatCash. Billet avec QR code envoyé sur WhatsApp.",
+               shopEy="Billetterie", shopH1="Vos billets, payés par MonCash ou NatCash.",
+               shopLead="Choisissez votre billet, envoyez le paiement, recevez votre QR code sur WhatsApp.",
+               orderT="Ma commande — BiZ Media", ticketT="Mon billet — BiZ Media", noscript="Activez JavaScript pour utiliser la billetterie."),
+    "en": dict(shopT="Tickets — BiZ Media", shopD="Buy event tickets with MonCash or NatCash. QR-code ticket sent on WhatsApp.",
+               shopEy="Tickets", shopH1="Your tickets, paid with MonCash or NatCash.",
+               shopLead="Pick your ticket, send the payment, get your QR code on WhatsApp.",
+               orderT="My order — BiZ Media", ticketT="My ticket — BiZ Media", noscript="Enable JavaScript to use ticketing."),
+}
+
+def app_shell(lang, key, title, desc, page, hero=None, scripts=(SB_JS, QR_JS, "assets/billetterie.js"), noindex=False):
+    k = TK[lang]
+    top = page_hero(*hero) if hero else ""
+    body = f'''{top}
+<section class="services app-sec"><div class="wrap"><div id="app"><noscript><p class="note">{e(k["noscript"])}</p></noscript></div></div></section>'''
+    return layout(lang, key, title, desc, body, page=page, scripts=scripts, noindex=noindex)
+
+def tickets(lang):
+    k = TK[lang]
+    return app_shell(lang, "tickets", k["shopT"], k["shopD"], "shop", hero=(k["shopEy"], k["shopH1"], k["shopLead"]))
+
+def order(lang):
+    k = TK[lang]
+    return app_shell(lang, "order", k["orderT"], k["shopD"], "order", noindex=True)
+
+def ticket(lang):
+    k = TK[lang]
+    return app_shell(lang, "ticket", k["ticketT"], k["shopD"], "ticket", noindex=True)
+
+def admin_page(depth, page, title):
+    root = "../" * depth
+    return f'''<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>{e(title)} — BiZ Media</title>
+<link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{root}assets/style.css">
+</head>
+<body data-page="{page}" data-root="{root}" class="adm">
+<header><div class="wrap nav">
+<a class="brand" href="{root}admin/" aria-label="BiZ Media — administration">
+<span class="biz" aria-hidden="true"><span>B</span><span class="i"><span class="dot"></span><span class="stem"></span></span><span>Z</span></span>
+<span class="sep" aria-hidden="true"></span><span class="media" aria-hidden="true">BILLETTERIE</span></a>
+<span id="who" class="who"></span>
+</div></header>
+<main id="main"><section class="services app-sec"><div class="wrap"><div id="app"><p class="note">Chargement…</p></div></div></section></main>
+<script src="{SB_JS}"></script>
+{f'<script src="{SCAN_JS}"></script>' if page == "scan" else ""}
+<script src="{root}assets/admin.js"></script>
+</body>
+</html>
+'''
+
+BUILDERS = {"home": home, "packages": packages, "work": work, "about": about, "tickets": tickets, "order": order, "ticket": ticket}
 
 here = Path(__file__).parent
 for key, paths in PAGES.items():
@@ -655,3 +723,8 @@ for key, paths in PAGES.items():
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(BUILDERS[key](lang), encoding="utf-8")
         print("OK:", out.relative_to(here))
+for depth, path, page, title in ((1, "admin/", "admin", "Administration"), (2, "admin/scan/", "scan", "Scanner")):
+    out = here / path / "index.html"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(admin_page(depth, page, title), encoding="utf-8")
+    print("OK:", out.relative_to(here))

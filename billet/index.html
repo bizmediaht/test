@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon billet — BiZ Media</title>
+<meta name="description" content="Achetez vos billets d’événements avec MonCash ou NatCash. Billet avec QR code envoyé sur WhatsApp.">
+<link rel="canonical" href="https://bizmedia.ht/billet/">
+<link rel="alternate" hreflang="fr" href="https://bizmedia.ht/billet/">
+<link rel="alternate" hreflang="en" href="https://bizmedia.ht/en/ticket/">
+<link rel="alternate" hreflang="x-default" href="https://bizmedia.ht/billet/">
+<meta property="og:title" content="Mon billet — BiZ Media">
+<meta property="og:description" content="Achetez vos billets d’événements avec MonCash ou NatCash. Billet avec QR code envoyé sur WhatsApp.">
+<meta property="og:image" content="https://bizmedia.ht/assets/og-image.png">
+<meta property="og:url" content="https://bizmedia.ht/billet/">
+<meta name="theme-color" content="#0F172A">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/style.css"><meta name="robots" content="noindex">
+</head>
+<body data-page="ticket" data-root="../">
+<a class="skip" href="#main">Aller au contenu</a>
+<header>
+<div class="wrap nav">
+<a class="brand" href="../" aria-label="BiZ Media">
+<span class="biz" aria-hidden="true"><span>B</span><span class="i"><span class="dot"></span><span class="stem"></span></span><span>Z</span></span>
+<span class="sep" aria-hidden="true"></span><span class="media" aria-hidden="true">MEDIA</span>
+</a>
+<nav aria-label="Navigation principale">
+<a class="l" href="../#services">Services</a>
+<a class="l" href="../forfaits/">Forfaits</a>
+<a class="l" href="../realisations/">Réalisations</a>
+<a class="l" href="../a-propos/">À propos</a>
+<a class="l" href="../billetterie/">Billetterie</a>
+<div class="lang" role="group" aria-label="Langue">
+<a href="../billet/" lang="fr" hreflang="fr" aria-current="true">FR</a>
+<a href="../en/ticket/" lang="en" hreflang="en">EN</a>
+</div>
+<a class="btn btn-gold" href="../#contact">Demander un devis</a>
+</nav>
+</div>
+</header>
+<main id="main">
+
+<section class="services app-sec"><div class="wrap"><div id="app"><noscript><p class="note">Activez JavaScript pour utiliser la billetterie.</p></noscript></div></div></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script><script src="../assets/billetterie.js"></script>
+<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl"><a href="../forfaits/">Forfaits</a> · <a href="../realisations/">Réalisations</a> · <a href="../a-propos/">À propos</a> · <a href="../billetterie/">Billetterie</a></span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){v.pause();v.removeAttribute('autoplay')});
+var q=document.getElementById('quote');
+if(q)q.addEventListener('submit',function(ev){
+  ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){return f.elements[n].value.trim()};
+  var lines=[d.intro,'',v('name')+(v('company')?' — '+v('company'):''),v('phone'),v('service'),'',v('project')].filter(function(x,i){return x||i===1||i===5});
+  var msg=lines.join('\n');
+  if(d.wa){window.open('https://wa.me/'+d.wa+'?text='+encodeURIComponent(msg),'_blank','noopener');}
+  else{location.href='mailto:'+d.email+'?subject='+encodeURIComponent(d.subject)+'&body='+encodeURIComponent(msg);}
+});
+var sel=document.querySelector('#quote select');var m=location.hash.match(/^#contact-(\d+)$/);
+if(sel&&m){if(sel.options[+m[1]])sel.selectedIndex=+m[1];document.getElementById('contact').scrollIntoView();}
+</script>
+</body>
+</html>
