@@ -218,6 +218,20 @@ T = {
 
 def e(s): return escape(s, quote=True)
 
+# Photos réelles — Bwat Sekrèm Talks
+PHOTOS = {
+    "fr": [("bst-certificats", "Remise des certificats aux intervenants, avec l’équipe Bwat Sekrèm sur scène"),
+           ("bst-intervenants", "Les intervenants reçoivent un panier de produits locaux"),
+           ("bst-scene", "Échanges chaleureux sur scène entre les intervenants et l’équipe"),
+           ("bst-echange", "Le présentateur échange avec un intervenant au micro"),
+           ("bst-remise", "Remise des cadeaux aux intervenants sur scène")],
+    "en": [("bst-certificats", "Speakers receive their certificates, with the Bwat Sekrèm team on stage"),
+           ("bst-intervenants", "Speakers receive a basket of local products"),
+           ("bst-scene", "Warm moments on stage between speakers and the team"),
+           ("bst-echange", "The host talks with a speaker at the microphone"),
+           ("bst-remise", "Gifts handed to the speakers on stage")],
+}
+
 def root_of(path):
     return "../" * path.count("/")
 
@@ -286,7 +300,7 @@ def layout(lang, key, title, desc, body):
 <main id="main">
 {body}
 </main>
-<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span><span class="c note">{e(t["illus"])}</span></div></footer>
+<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){{v.pause();v.removeAttribute('autoplay')}});
@@ -457,7 +471,7 @@ def home(lang):
 <ul class="checks">{"".join(f'<li>{svg("check", "#B45309", 18)}<span>{e(p)}</span></li>' for p in s["points"])}</ul></div>
 <div class="how-vis">{mocks[i]}</div>
 </li>''' for i, s in enumerate(h["how"]))
-    photos = "".join(f'<img src="{root_of(me)}assets/img/{n}-sm.jpg" srcset="{root_of(me)}assets/img/{n}-sm.jpg 640w, {root_of(me)}assets/img/{n}.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357">' for n in ("conference", "checkin", "certificate"))
+    photos = "".join(f'<img src="{root_of(me)}assets/img/{n}-sm.jpg" srcset="{root_of(me)}assets/img/{n}-sm.jpg 700w, {root_of(me)}assets/img/{n}.jpg 1600w" sizes="(max-width:720px) 100vw, 33vw" alt="{e(alt)}" loading="lazy" width="700" height="467">' for n, alt in PHOTOS[lang][:3])
     plans = []
     for i, p in enumerate(t["packages"][:3]):
         opt = {0: 1, 1: 0, 2: 2}[i]
@@ -485,7 +499,7 @@ def home(lang):
 <div class="actions">{cta_main}<a class="btn btn-ghost" href="#comment">{e(h["ctaHow"])}</a></div>
 </div>
 <div class="col reel-col">
-<div class="reel"><video autoplay muted loop playsinline preload="metadata" poster="{root_of(me)}assets/img/conference.jpg" aria-label="{e(h["reelLabel"])}"><source src="{root_of(me)}assets/showreel.mp4" type="video/mp4"></video></div>
+<div class="reel"><video autoplay muted loop playsinline preload="metadata" poster="{root_of(me)}assets/img/bst-certificats.jpg" aria-label="{e(h["reelLabel"])}"><source src="{root_of(me)}assets/showreel.mp4" type="video/mp4"></video></div>
 </div>
 </div>
 <div class="wrap trust"><span>{e(h["trust"])}</span><ul>{trust}</ul></div>
@@ -583,7 +597,7 @@ def packages(lang):
 def work(lang):
     t = T[lang]; me = PAGES["work"][lang]; home_ = PAGES["home"][lang]
     sol = "".join(f'<li>{svg("check", "#B45309", 18)}<span>{e(x)}</span></li>' for x in t["csSolution"])
-    gallery = "".join(f'<img src="{root_of(me)}assets/img/{n}-sm.jpg" srcset="{root_of(me)}assets/img/{n}-sm.jpg 640w, {root_of(me)}assets/img/{n}.jpg 1376w" sizes="(max-width:720px) 100vw, 33vw" alt="" loading="lazy" width="640" height="357">' for n in ("conference", "videographer", "checkin", "audience", "networking", "interview"))
+    gallery = "".join(f'<img src="{root_of(me)}assets/img/{n}-sm.jpg" srcset="{root_of(me)}assets/img/{n}-sm.jpg 700w, {root_of(me)}assets/img/{n}.jpg 1600w" sizes="(max-width:720px) 100vw, 33vw" alt="{e(alt)}" loading="lazy" width="700" height="467">' for n, alt in PHOTOS[lang])
     body = f'''{page_hero(t["wkEyebrow"], t["wkH1"], t["wkLead"])}
 <section class="services"><div class="wrap">
 <div class="cs">
