@@ -20,6 +20,37 @@ NOT_CONFIRMED = (32, 79)    # non confirmées
 REACHED = (348, 374)        # inscrits ayant reçu au moins un message
 RATING = (4.89, 9)
 
+# Public : 326 inscriptions actives (hors annulations). Profils à choix multiples (53 personnes en ont coché plusieurs).
+AUD_N = 326
+PROFILES = [("etudiant", 203, 93), ("employe", 76, 41), ("proprietaire", 51, 29), ("cadre", 16, 7), ("autre", 44, 22)]  # (clé, inscrits, présents)
+GENDER = [("femme", 201), ("homme", 124)]          # 1 non renseigné
+CITY = [("cap", 283), ("nord", 18), ("pap", 11), ("autre", 14)]
+SOURCES = [("ami", 140), ("whatsapp", 131), ("instagram", 14), ("affiche", 13), ("surplace", 11), ("facebook", 6), ("autre", 11)]
+AUD_TXT = {
+    "fr": dict(title="Qui était dans la salle ?", sub="326 inscriptions actives · profils déclarés à l’inscription",
+               prof="Profil professionnel", profs="Plusieurs choix possibles : le total dépasse 100 %",
+               gen="Répartition femmes / hommes", city="Ville de provenance", src="Comment ils ont connu l’événement",
+               tip="{l} : {n} inscrits ({p} %)", tipP="{l} : {n} inscrits ({p} %) · {r} % présents le jour J",
+               lab=dict(etudiant="Étudiants", employe="Employés", proprietaire="Entrepreneurs", cadre="Cadres", autre="Autres",
+                        femme="Femmes", homme="Hommes", cap="Cap-Haïtien", nord="Autres communes du Nord", pap="Port-au-Prince",
+                        ami="Un ami / un collègue", whatsapp="WhatsApp", instagram="Instagram", affiche="Affiche",
+                        surplace="Sur place (jour J)", facebook="Facebook"),
+               insight="Les entrepreneurs ont le meilleur taux de présence ({a} %), devant les étudiants ({b} %).",
+               insight2="83 % des inscriptions viennent du bouche-à-oreille et de WhatsApp.",
+               cols=("Groupe", "Inscrits", "Part", "Présents")),
+    "en": dict(title="Who was in the room?", sub="326 active registrations · profiles declared at sign-up",
+               prof="Professional profile", profs="Multiple choices allowed: totals exceed 100%",
+               gen="Women / men split", city="Home city", src="How they heard about the event",
+               tip="{l}: {n} registrants ({p}%)", tipP="{l}: {n} registrants ({p}%) · {r}% attended",
+               lab=dict(etudiant="Students", employe="Employees", proprietaire="Business owners", cadre="Managers", autre="Other",
+                        femme="Women", homme="Men", cap="Cap-Haïtien", nord="Other towns in the North", pap="Port-au-Prince",
+                        ami="A friend / colleague", whatsapp="WhatsApp", instagram="Instagram", affiche="Poster",
+                        surplace="On site (event day)", facebook="Facebook"),
+               insight="Business owners had the best attendance rate ({a}%), ahead of students ({b}%).",
+               insight2="83% of registrations came from word of mouth and WhatsApp.",
+               cols=("Group", "Registrants", "Share", "Attended")),
+}
+
 GOLD, GRID, AXIS, MUTED, SURF = "#F5B841", "#334155", "#94A3B8", "#64748B", "#1E293B"
 
 TXT = {
@@ -141,6 +172,39 @@ def chart_attendance(t):
     return f'<div class="hbars">{bars}</div><p class="gain">{e(t["gain"].format(p=gain))}</p>', table
 
 
+def audience_html(lang):
+    a = AUD_TXT[lang]; L = a["lab"]; sp = " %" if lang == "fr" else "%"
+    lab = lambda k: L.get(k, a["lab"]["autre"])
+
+    def bars(rows, with_rate=False):
+        out, trs = "", ""
+        for r in rows:
+            k, n = r[0], r[1]
+            p = pct(n, AUD_N)
+            tip = (a["tipP"].format(l=lab(k), n=n, p=p, r=pct(r[2], n)) if with_rate else a["tip"].format(l=lab(k), n=n, p=p))
+            out += (f'<div class="hb sm" tabindex="0" data-tip="{e(tip)}"><span class="hb-l">{e(lab(k))}</span>'
+                    f'<span class="hb-track"><span class="hb-fill" style="width:{p}%;background:{GOLD}"></span></span>'
+                    f'<b class="hb-v">{p}{sp}</b></div>')
+            trs += f"<tr><td>{e(lab(k))}</td><td>{n}</td><td>{p}{sp}</td>" + (f"<td>{pct(r[2], n)}{sp}</td>" if with_rate else "") + "</tr>"
+        cols = a["cols"] if with_rate else a["cols"][:3]
+        table = "<table><thead><tr>" + "".join(f"<th>{e(c)}</th>" for c in cols) + f"</tr></thead><tbody>{trs}</tbody></table>"
+        return f'<div class="hbars">{out}</div>', table
+
+    def card(title, sub, rows, with_rate=False, note=""):
+        body, table = bars(rows, with_rate)
+        return (f'<figure class="chart"><figcaption><b>{e(title)}</b>{f"<span>{e(sub)}</span>" if sub else ""}</figcaption>{body}'
+                f'{f"<p class=gain>{e(note)}</p>" if note else ""}'
+                f'<details class="data"><summary>{e(TXT[lang]["data"])}</summary>{table}</details></figure>')
+    rate = {k: pct(p, n) for k, n, p in PROFILES}
+    return f'''<div class="aud-head"><h3>{e(a["title"])}</h3><p>{e(a["sub"])}</p></div>
+<div class="charts">
+{card(a["prof"], a["profs"], PROFILES, True, a["insight"].format(a=rate["proprietaire"], b=rate["etudiant"]))}
+{card(a["src"], "", SOURCES, note=a["insight2"])}
+{card(a["gen"], "", GENDER)}
+{card(a["city"], "", CITY)}
+</div>'''
+
+
 def proof_html(lang, more_link=""):
     t = TXT[lang]
     booked5 = sum(n for _, n in DAILY_PLACES[:5])
@@ -166,6 +230,7 @@ def proof_html(lang, more_link=""):
 {card(t["c2"], t["c2s"], s2, t2)}
 {card(t["c3"], t["c3s"], s3, t3)}
 </div>
+{audience_html(lang)}
 <p class="src">{e(t["source"])}{more_link}</p>
 <div class="chart-tip" role="tooltip" hidden></div>
 </div>'''
