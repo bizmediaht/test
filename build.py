@@ -22,6 +22,7 @@ PAGES = {
     "tickets":  {"fr": "billetterie/",  "en": "en/tickets/"},
     "order":    {"fr": "billetterie/commande/", "en": "en/tickets/order/"},
     "ticket":   {"fr": "billet/",       "en": "en/ticket/"},
+    "client-cap-talent-lab": {"fr": "cap-talent-lab/", "en": "en/cap-talent-lab/"},
 }
 
 ICONS = {
@@ -254,7 +255,7 @@ def rel(frm, to, anchor=""):
 def svg(name, color="#F5B841", size=26):
     return f'<svg aria-hidden="true" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{ICONS[name]}</svg>'
 
-def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False):
+def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False, attrs=""):
     t = T[lang]; me = PAGES[key][lang]; root = "../" * me.count("/")
     other = "en" if lang == "fr" else "fr"
     n = t["nav"]
@@ -286,7 +287,7 @@ def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="{root}{v("assets/style.css")}">{'<meta name="robots" content="noindex">' if noindex else ""}
 </head>
-<body{f' data-page="{page}" data-root="{root}"' if page else ""}>
+<body{f' data-page="{page}" data-root="{root}"' if page else ""}{attrs}>
 <a class="skip" href="#main">{e(t["skip"])}</a>
 <header>
 <div class="wrap nav">
@@ -724,7 +725,30 @@ def admin_page(depth, page, title):
 </html>
 '''
 
-BUILDERS = {"home": home, "packages": packages, "work": work, "about": about, "tickets": tickets, "order": order, "ticket": ticket}
+# Pages clients (à publier dans le menu seulement après accord du client)
+CLIENTS = {
+    "cap-talent-lab": dict(name="Cap Talent Lab", color="#09346D", accent="#F2682A", logo="assets/clients/cap-talent-lab.jpg",
+        fr=dict(tag="Salon de l’emploi du Cap-Haïtien", lead="Une plateforme de connexion entre talents et entreprises.",
+                ev="Prochaines éditions", with_="Inscriptions et billetterie propulsées par BiZ Media"),
+        en=dict(tag="Cap-Haïtien job fair", lead="A platform connecting talent and companies.",
+                ev="Upcoming editions", with_="Registration and ticketing powered by BiZ Media")),
+}
+
+def client_page(slug):
+    c = CLIENTS[slug]
+    def build(lang):
+        k = c[lang]; me = PAGES["client-" + slug][lang]; root = "../" * me.count("/")
+        body = f'''<section class="hero client-hero" style="--c:{c["color"]};--a:{c["accent"]}"><div class="wrap">
+<div class="client-id"><img src="{root}{c["logo"]}" alt="{e(c["name"])}" width="120" height="120"><div>
+<span class="eyebrow">{e(k["tag"])}</span><h1>{e(c["name"])}</h1><p class="lead">{e(k["lead"])}</p></div></div>
+</div></section>
+<section class="services app-sec"><div class="wrap"><h2 class="client-ev">{e(k["ev"])}</h2><div id="app"></div>
+<p class="note powered">{e(k["with_"])}</p></div></section>'''
+        return layout(lang, "client-" + slug, f"{c['name']} — {k['tag']}", k["lead"], body, page="shop",
+                      scripts=(SB_JS, QR_JS, "assets/billetterie.js"), noindex=True, attrs=f' data-org="{slug}"')
+    return build
+
+BUILDERS = {"client-cap-talent-lab": client_page("cap-talent-lab"), "home": home, "packages": packages, "work": work, "about": about, "tickets": tickets, "order": order, "ticket": ticket}
 
 here = Path(__file__).parent
 for key, paths in PAGES.items():

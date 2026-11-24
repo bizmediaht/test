@@ -13,12 +13,12 @@
 
   var L = {
     fr: {
-      loading: 'Chargement…', noEvents: 'Aucun événement en vente pour le moment.', buy: 'Acheter un billet',
+      loading: 'Chargement…', noEvents: 'Aucun événement en vente pour le moment.', noEventsOrg: 'Les inscriptions pour la prochaine édition ouvriront bientôt.', buy: 'Acheter un billet',
       seatsLeft: function (n) { return n > 0 ? n + ' place' + (n > 1 ? 's' : '') + ' restante' + (n > 1 ? 's' : '') : 'Complet'; },
       chooseType: 'Type de billet', qty: 'Nombre de billets', total: 'Total à payer',
       payTitle: 'Comment payer', payStep1: function (amt, m, num) { return 'Envoyez ' + amt + ' par ' + m + ' au ' + num + '.'; },
       payStep2: 'Notez le numéro de transaction reçu par SMS.', payStep3: 'Remplissez le formulaire ci-dessous. Nous vérifions votre paiement et vous envoyons vos billets sur WhatsApp.',
-      name: 'Nom complet', phone: 'Numéro WhatsApp', email: 'E-mail (facultatif)',
+      name: 'Nom complet', phone: 'Numéro WhatsApp', free: 'Entrée gratuite', register: 'S’inscrire', freeNote: 'Entrée gratuite : votre billet est créé immédiatement.', choose: '— Choisir —', sendFree: 'Obtenir mon billet', email: 'E-mail (facultatif)',
       cEvent: function (o) { return 'J’accepte que ' + o + ' utilise mes informations pour gérer ma participation à cet événement.'; },
       cBiz: 'J’accepte que BiZ Media me contacte pour d’autres événements et opportunités (facultatif).',
       organizer: 'Organisé par ', withdraw: 'Ne plus être contacté par BiZ Media', withdrawn: 'C’est noté : BiZ Media ne vous contactera plus.', method: 'Paiement envoyé par', ref: 'Numéro de transaction', proof: 'Capture d’écran du paiement (facultatif)',
@@ -26,7 +26,7 @@
       errGeneric: 'Une erreur est survenue. Réessayez ou écrivez-nous sur WhatsApp.', soldOut: 'Complet',
       orderPending: 'Commande reçue — paiement en cours de vérification',
       orderPendingText: 'Nous vérifions votre paiement. Vos billets apparaîtront sur cette page et vous seront envoyés sur WhatsApp. Gardez ce lien.',
-      orderPaid: 'Paiement confirmé — voici vos billets', orderRejected: 'Commande refusée', reason: 'Motif : ',
+      orderPaid: 'Paiement confirmé — voici vos billets', orderFree: 'Inscription confirmée — voici votre billet', orderRejected: 'Commande refusée', reason: 'Motif : ',
       contact: 'Écrire à BiZ sur WhatsApp', refresh: 'Actualiser', openTicket: 'Ouvrir le billet', orderNotFound: 'Commande introuvable.',
       ticketUsed: 'Billet déjà utilisé le ', ticketValid: 'Billet valide — présentez ce QR code à l’entrée', ticketNotFound: 'Billet introuvable.',
       holder: 'Titulaire', type: 'Type', date: 'Date', venue: 'Lieu', code: 'Code', amount: 'Montant',
@@ -34,12 +34,12 @@
       htg: ' HTG'
     },
     en: {
-      loading: 'Loading…', noEvents: 'No events on sale right now.', buy: 'Buy a ticket',
+      loading: 'Loading…', noEvents: 'No events on sale right now.', noEventsOrg: 'Registration for the next edition opens soon.', buy: 'Buy a ticket',
       seatsLeft: function (n) { return n > 0 ? n + ' seat' + (n > 1 ? 's' : '') + ' left' : 'Sold out'; },
       chooseType: 'Ticket type', qty: 'Number of tickets', total: 'Total to pay',
       payTitle: 'How to pay', payStep1: function (amt, m, num) { return 'Send ' + amt + ' via ' + m + ' to ' + num + '.'; },
       payStep2: 'Note the transaction number you receive by SMS.', payStep3: 'Fill in the form below. We check your payment and send your tickets on WhatsApp.',
-      name: 'Full name', phone: 'WhatsApp number', email: 'Email (optional)',
+      name: 'Full name', phone: 'WhatsApp number', free: 'Free entry', register: 'Register', freeNote: 'Free entry: your ticket is created right away.', choose: '— Choose —', sendFree: 'Get my ticket', email: 'Email (optional)',
       cEvent: function (o) { return 'I agree that ' + o + ' may use my information to manage my attendance at this event.'; },
       cBiz: 'I agree that BiZ Media may contact me about other events and opportunities (optional).',
       organizer: 'Organized by ', withdraw: 'Stop BiZ Media from contacting me', withdrawn: 'Done: BiZ Media will no longer contact you.', method: 'Payment sent with', ref: 'Transaction number', proof: 'Payment screenshot (optional)',
@@ -47,7 +47,7 @@
       errGeneric: 'Something went wrong. Try again or message us on WhatsApp.', soldOut: 'Sold out',
       orderPending: 'Order received — payment being checked',
       orderPendingText: 'We are checking your payment. Your tickets will appear on this page and be sent to you on WhatsApp. Keep this link.',
-      orderPaid: 'Payment confirmed — here are your tickets', orderRejected: 'Order declined', reason: 'Reason: ',
+      orderPaid: 'Payment confirmed — here are your tickets', orderFree: 'Registration confirmed — here is your ticket', orderRejected: 'Order declined', reason: 'Reason: ',
       contact: 'Message BiZ on WhatsApp', refresh: 'Refresh', openTicket: 'Open ticket', orderNotFound: 'Order not found.',
       ticketUsed: 'Ticket already used on ', ticketValid: 'Valid ticket — show this QR code at the door', ticketNotFound: 'Ticket not found.',
       holder: 'Holder', type: 'Type', date: 'Date', venue: 'Venue', code: 'Code', amount: 'Amount',
@@ -68,7 +68,7 @@
     (kids || []).forEach(function (c) { if (c) el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
     return el;
   }
-  function money(n) { return new Intl.NumberFormat(EN ? 'en-US' : 'fr-FR').format(n) + L.htg; }
+  function money(n) { return n === 0 ? L.free : new Intl.NumberFormat(EN ? 'en-US' : 'fr-FR').format(n) + L.htg; }
   function when(d) {
     return new Intl.DateTimeFormat(EN ? 'en-US' : 'fr-FR', { dateStyle: 'full', timeStyle: 'short', timeZone: 'America/Port-au-Prince' }).format(new Date(d));
   }
@@ -89,18 +89,20 @@
   async function pageShop() {
     var app = $('#app'); msg(app, L.loading);
     var slug = param('e');
-    var q = sb.from('events').select('id, slug, title, description, venue, starts_at, payment_number, payment_methods, organizations(name, logo_url), ticket_types(id, name, description, price_htg, sort)').eq('is_published', true).order('starts_at');
+    var q = sb.from('events').select('id, slug, title, description, venue, starts_at, payment_number, payment_methods, questions, organizations(slug, name, logo_url, brand_color, accent_color), ticket_types(id, name, description, price_htg, sort)').eq('is_published', true).order('starts_at');
+    var orgSlug = body.getAttribute('data-org');
     var res = slug ? await q.eq('slug', slug) : await q;
     if (res.error) return msg(app, L.errGeneric, 'err');
     if (!slug) {
-      if (!res.data.length) return msg(app, L.noEvents);
+      if (orgSlug) res.data = res.data.filter(function (ev) { return ev.organizations && ev.organizations.slug === orgSlug; });
+      if (!res.data.length) return msg(app, orgSlug ? L.noEventsOrg : L.noEvents);
       app.replaceChildren(h('div', { class: 'ev-list' }, res.data.map(function (ev) {
         var min = Math.min.apply(null, ev.ticket_types.map(function (t) { return t.price_htg; }));
         return h('article', { class: 'ev-card' }, [
           h('span', { class: 'eyebrow', text: when(ev.starts_at) }),
           h('h2', { text: ev.title }), h('p', { class: 'lead', text: ev.venue || '' }),
-          h('p', { class: 'ev-price', text: (EN ? 'From ' : 'À partir de ') + money(min) }),
-          h('a', { class: 'btn btn-gold', href: '?e=' + encodeURIComponent(ev.slug), text: L.buy })
+          h('p', { class: 'ev-price', text: min === 0 ? L.free : (EN ? 'From ' : 'À partir de ') + money(min) }),
+          h('a', { class: 'btn btn-gold', href: url((EN ? 'en/tickets/' : 'billetterie/') + '?e=' + encodeURIComponent(ev.slug)), text: min === 0 ? L.register : L.buy })
         ]);
       })));
       return;
@@ -126,7 +128,14 @@
       ]);
     }));
     if (!$('input[name=tt]:checked', typeBox)) { var first = $('input[name=tt]:not([disabled])', typeBox); if (first) first.checked = true; }
+    var payBox;
+    function isFree() { var sel = $('input[name=tt]:checked', typeBox); return !!sel && Number(sel.getAttribute('data-price')) === 0; }
+    function answers() {
+      var a = {}; (ev.questions || []).forEach(function (qq) { var v = form['q_' + qq.id].value.trim(); if (v) a[qq.id] = v; }); return a;
+    }
     function update() {
+      var free = isFree();
+      if (payBox) { payBox.hidden = free; payRow.hidden = free; proofRow.hidden = free; form.ref.required = !free; $('button[type=submit]', form).textContent = free ? L.sendFree : L.submit; freeNote.hidden = !free; }
       var sel = $('input[name=tt]:checked', typeBox);
       var amt = sel ? Number(sel.getAttribute('data-price')) * Number(qty.value) : 0;
       totalEl.textContent = money(amt);
@@ -135,16 +144,24 @@
     typeBox.addEventListener('change', update); qty.addEventListener('change', update);
 
     var status = h('div', { 'aria-live': 'polite' });
+    var questions = (ev.questions || []).map(function (qq) {
+      var input = qq.type === 'select'
+        ? h('select', { name: 'q_' + qq.id, required: !!qq.required }, [h('option', { value: '', text: L.choose })].concat((qq.options || []).map(function (o) { return h('option', { value: o, text: o }); })))
+        : h('input', { name: 'q_' + qq.id, required: !!qq.required, maxlength: 200 });
+      return h('label', null, [qq.label + (qq.required ? '' : (EN ? ' (optional)' : ' (facultatif)')), input]);
+    });
+    var payRow = h('div', { class: 'row' }, [
+        h('label', null, [L.method, h('select', { name: 'method' }, methods.map(function (m) { return h('option', { value: m, text: m }); }))]),
+        h('label', null, [L.ref, h('input', { name: 'ref', required: true, maxlength: 80 })])
+      ]);
+    var proofRow = h('label', null, [L.proof, h('input', { name: 'proof', type: 'file', accept: 'image/*' })]);
     var form = h('form', { class: 'buy-form' }, [
       h('div', { class: 'row' }, [
         h('label', null, [L.name, h('input', { name: 'name', required: true, autocomplete: 'name', minlength: 2, maxlength: 120 })]),
         h('label', null, [L.phone, h('input', { name: 'phone', type: 'tel', required: true, autocomplete: 'tel', placeholder: '+509', minlength: 8, maxlength: 20 })])
       ]),
-      h('div', { class: 'row' }, [
-        h('label', null, [L.method, h('select', { name: 'method' }, methods.map(function (m) { return h('option', { value: m, text: m }); }))]),
-        h('label', null, [L.ref, h('input', { name: 'ref', required: true, maxlength: 80 })])
-      ]),
-      h('label', null, [L.proof, h('input', { name: 'proof', type: 'file', accept: 'image/*' })]),
+      questions.length ? h('div', { class: 'q-grid' }, questions) : null,
+      payRow, proofRow,
       h('label', null, [L.email, h('input', { name: 'email', type: 'email', autocomplete: 'email', maxlength: 160 })]),
       h('label', { class: 'consent' }, [h('input', { type: 'checkbox', name: 'cEvent', required: true }), h('span', { text: L.cEvent(org) })]),
       h('label', { class: 'consent' }, [h('input', { type: 'checkbox', name: 'cBiz' }), h('span', { text: L.cBiz })]),
@@ -155,7 +172,7 @@
       var btn = $('button', form); btn.disabled = true; btn.textContent = L.sending;
       try {
         var sel = $('input[name=tt]:checked', typeBox); if (!sel) throw new Error(L.soldOut);
-        var proofPath = null, file = form.proof.files[0];
+        var proofPath = null, file = isFree() ? null : form.proof.files[0];
         if (file) {
           if (file.size > 5 * 1024 * 1024) throw new Error('Image > 5 Mo');
           var ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'jpg';
@@ -165,8 +182,8 @@
         }
         var r = await sb.rpc('create_order', {
           p_ticket_type: sel.value, p_quantity: Number(qty.value), p_name: form.name.value, p_phone: form.phone.value,
-          p_method: form.method.value, p_ref: form.ref.value, p_proof_path: proofPath,
-          p_email: form.email.value || null, p_consent_event: form.cEvent.checked, p_consent_biz: form.cBiz.checked, p_answers: {}
+          p_method: isFree() ? null : form.method.value, p_ref: isFree() ? null : form.ref.value, p_proof_path: isFree() ? null : proofPath,
+          p_email: form.email.value || null, p_consent_event: form.cEvent.checked, p_consent_biz: form.cBiz.checked, p_answers: answers()
         });
         if (r.error) throw r.error;
         location.href = url((EN ? 'en/tickets/order/' : 'billetterie/commande/') + '?t=' + r.data);
@@ -175,7 +192,8 @@
       }
     });
 
-    update();
+    var freeNote = h('p', { class: 'pay free', text: L.freeNote, hidden: true });
+    var lg = ev.organizations && ev.organizations.logo_url;
     app.replaceChildren(
       h('a', { class: 'dark-link back', href: './', text: L.back }),
       h('div', { class: 'shop' }, [
@@ -183,18 +201,20 @@
           h('span', { class: 'eyebrow', text: when(ev.starts_at) }),
           h('h1', { class: 'ev-title', text: ev.title }),
           h('p', { class: 'lead', text: ev.venue || '' }),
-          h('p', { class: 'organizer', text: L.organizer + org }),
+          h('p', { class: 'organizer' }, [lg ? h('img', { src: url(lg), alt: '', width: 40, height: 40 }) : null, L.organizer + org]),
           ev.description ? h('p', { text: ev.description }) : null
         ]),
         h('div', { class: 'shop-buy' }, [
           h('h2', { text: L.chooseType }), typeBox,
           h('label', { class: 'qty' }, [L.qty, qty]),
           h('p', { class: 'total-line' }, [L.total + ' : ', totalEl]),
-          h('div', { class: 'pay' }, [h('h3', { text: L.payTitle }), h('ol', null, [step1, h('li', { text: L.payStep2 }), h('li', { text: L.payStep3 })])]),
+          payBox = h('div', { class: 'pay' }, [h('h3', { text: L.payTitle }), h('ol', null, [step1, h('li', { text: L.payStep2 }), h('li', { text: L.payStep3 })])]),
+          freeNote,
           form
         ])
       ])
     );
+    update();
   }
 
   /* ---------- Suivi de commande ---------- */
@@ -207,7 +227,7 @@
     var label = o.quantity + ' × ' + o.ticket_type + ' — ' + o.event.title;
     var kids = [
       h('span', { class: 'eyebrow', text: o.event.title }),
-      h('h1', { class: 'ev-title', text: o.status === 'paid' ? L.orderPaid : o.status === 'rejected' ? L.orderRejected : L.orderPending }),
+      h('h1', { class: 'ev-title', text: o.status === 'paid' ? (o.amount_htg === 0 ? L.orderFree : L.orderPaid) : o.status === 'rejected' ? L.orderRejected : L.orderPending }),
       h('dl', { class: 'meta' }, [
         h('div', null, [h('dt', { text: L.holder }), h('dd', { text: o.buyer_name })]),
         h('div', null, [h('dt', { text: L.type }), h('dd', { text: o.quantity + ' × ' + o.ticket_type })]),

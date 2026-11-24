@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cap Talent Lab — Salon de l’emploi du Cap-Haïtien</title>
+<meta name="description" content="Une plateforme de connexion entre talents et entreprises.">
+<link rel="canonical" href="https://bizmedia.ht/cap-talent-lab/">
+<link rel="alternate" hreflang="fr" href="https://bizmedia.ht/cap-talent-lab/">
+<link rel="alternate" hreflang="en" href="https://bizmedia.ht/en/cap-talent-lab/">
+<link rel="alternate" hreflang="x-default" href="https://bizmedia.ht/cap-talent-lab/">
+<meta property="og:title" content="Cap Talent Lab — Salon de l’emploi du Cap-Haïtien">
+<meta property="og:description" content="Une plateforme de connexion entre talents et entreprises.">
+<meta property="og:image" content="https://bizmedia.ht/assets/og-image.png">
+<meta property="og:url" content="https://bizmedia.ht/cap-talent-lab/">
+<meta name="theme-color" content="#0F172A">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=6009387b"><meta name="robots" content="noindex">
+</head>
+<body data-page="shop" data-root="../" data-org="cap-talent-lab">
+<a class="skip" href="#main">Aller au contenu</a>
+<header>
+<div class="wrap nav">
+<a class="brand" href="../" aria-label="BiZ Media">
+<span class="biz" aria-hidden="true"><span>B</span><span class="i"><span class="dot"></span><span class="stem"></span></span><span>Z</span></span>
+<span class="sep" aria-hidden="true"></span><span class="media" aria-hidden="true">MEDIA</span>
+</a>
+<nav aria-label="Navigation principale">
+<a class="l" href="../#services">Services</a>
+<a class="l" href="../forfaits/">Forfaits</a>
+<a class="l" href="../realisations/">Réalisations</a>
+<a class="l" href="../a-propos/">À propos</a>
+<a class="l" href="../billetterie/">Billetterie</a>
+<div class="lang" role="group" aria-label="Langue">
+<a href="../cap-talent-lab/" lang="fr" hreflang="fr" aria-current="true">FR</a>
+<a href="../en/cap-talent-lab/" lang="en" hreflang="en">EN</a>
+</div>
+<a class="btn btn-gold" href="../#contact">Demander un devis</a>
+</nav>
+</div>
+</header>
+<main id="main">
+<section class="hero client-hero" style="--c:#09346D;--a:#F2682A"><div class="wrap">
+<div class="client-id"><img src="../assets/clients/cap-talent-lab.jpg" alt="Cap Talent Lab" width="120" height="120"><div>
+<span class="eyebrow">Salon de l’emploi du Cap-Haïtien</span><h1>Cap Talent Lab</h1><p class="lead">Une plateforme de connexion entre talents et entreprises.</p></div></div>
+</div></section>
+<section class="services app-sec"><div class="wrap"><h2 class="client-ev">Prochaines éditions</h2><div id="app"></div>
+<p class="note powered">Inscriptions et billetterie propulsées par BiZ Media</p></div></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script><script src="../assets/billetterie.js?v=4a1d4494"></script>
+<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl"><a href="../forfaits/">Forfaits</a> · <a href="../realisations/">Réalisations</a> · <a href="../a-propos/">À propos</a> · <a href="../billetterie/">Billetterie</a></span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){v.pause();v.removeAttribute('autoplay')});
+(function(){var it=document.querySelectorAll('.rot-i');if(it.length<2||matchMedia('(prefers-reduced-motion: reduce)').matches)return;var i=0;setInterval(function(){it[i].classList.remove('on');i=(i+1)%it.length;it[i].classList.add('on');},3200);})();
+document.querySelectorAll('.proof-data').forEach(function(box){var tip=box.querySelector('.chart-tip');function show(ev){var el=ev.target.closest('[data-tip]');if(!el||!box.contains(el)){tip.hidden=true;return;}tip.textContent=el.getAttribute('data-tip');tip.hidden=false;var r=el.getBoundingClientRect(),b=box.getBoundingClientRect();tip.style.left=Math.max(8,Math.min(b.width-tip.offsetWidth-8,r.left-b.left+r.width/2-tip.offsetWidth/2))+'px';tip.style.top=(r.top-b.top-tip.offsetHeight-8)+'px';}box.addEventListener('mouseover',show);box.addEventListener('focusin',show);box.addEventListener('mouseleave',function(){tip.hidden=true});box.addEventListener('focusout',function(){tip.hidden=true});});
+var q=document.getElementById('quote');
+if(q)q.addEventListener('submit',function(ev){
+  ev.preventDefault();var f=ev.target,d=f.dataset,v=function(n){return f.elements[n].value.trim()};
+  var lines=[d.intro,'',v('name')+(v('company')?' — '+v('company'):''),v('phone'),v('service'),'',v('project')].filter(function(x,i){return x||i===1||i===5});
+  var msg=lines.join('\n');
+  if(d.wa){window.open('https://wa.me/'+d.wa+'?text='+encodeURIComponent(msg),'_blank','noopener');}
+  else{location.href='mailto:'+d.email+'?subject='+encodeURIComponent(d.subject)+'&body='+encodeURIComponent(msg);}
+});
+var sel=document.querySelector('#quote select');var m=location.hash.match(/^#contact-(\d+)$/);
+if(sel&&m){if(sel.options[+m[1]])sel.selectedIndex=+m[1];document.getElementById('contact').scrollIntoView();}
+</script>
+</body>
+</html>
