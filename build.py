@@ -733,7 +733,7 @@ for key, paths in PAGES.items():
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(BUILDERS[key](lang), encoding="utf-8")
         print("OK:", out.relative_to(here))
-for depth, path, page, title in ((1, "admin/", "admin", "Administration"), (2, "admin/scan/", "scan", "Scanner")):
+for depth, path, page, title in ((1, "admin/", "admin", "Administration"), (2, "admin/scan/", "scan", "Scanner"), (2, "admin/participants/", "people", "Base nationale")):
     out = here / path / "index.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(admin_page(depth, page, title), encoding="utf-8")

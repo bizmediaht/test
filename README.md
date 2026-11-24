@@ -37,3 +37,13 @@ Paiement MonCash / NatCash envoyé par le client, vérifié à la main, puis bil
 - `admin/` : validation des paiements et envoi des billets sur WhatsApp · `admin/scan/` : scanner à l'entrée
 - Les événements et types de billets se créent dans Supabase (tables `events`, `ticket_types`).
 - Un administrateur = un compte Supabase Auth dont l'e-mail est dans la table `admins`.
+
+## Plusieurs clients et base nationale
+
+- `organizations` : un client (ex. Cap Talent Lab). Chaque événement appartient à un client (`events.org_id`).
+- `org_members` : e-mails qui ont accès à l'espace d'un client (`owner` ou `staff`). Ils ne voient que les événements, commandes et billets de leur client.
+- `admins` : équipe BiZ Media (super-admin) — voit tous les clients et la base nationale (`admin/participants/`).
+- `people` : une fiche par numéro de téléphone (format +509…), partagée entre tous les clients.
+  `consent_biz` = la personne a coché « BiZ Media peut me contacter ». Seules ces personnes peuvent être contactées par BiZ.
+- Le formulaire impose le consentement pour l'événement ; le consentement BiZ est facultatif et décoché par défaut.
+  La page de commande permet de retirer ce consentement.

@@ -29,13 +29,15 @@
       '\nPrésentez le QR code à l’entrée. — BiZ Media';
   }
   var app = $('#app');
+  var ACCESS = null;
 
   /* ---------- Connexion ---------- */
   async function requireAdmin() {
     var s = await sb.auth.getSession();
     if (!s.data.session) { loginView(); return false; }
-    var a = await sb.rpc('is_admin');
-    if (!a.data) {
+    var a = await sb.rpc('my_access');
+    ACCESS = a.data || { orgs: [] };
+    if (!(ACCESS.superadmin || ACCESS.orgs.length)) {
       app.replaceChildren(h('div', { class: 'panel' }, [
         h('h1', { class: 'ev-title', text: 'Compte non autorisé' }),
         h('p', { class: 'lead', text: 'Le compte ' + s.data.session.user.email + ' n’est pas encore administrateur. Demandez à BiZ Media de l’ajouter.' }),
@@ -43,7 +45,10 @@
       ]));
       return false;
     }
-    $('#who').replaceChildren(s.data.session.user.email + ' · ', h('button', { class: 'linkbtn', type: 'button', onclick: logout, text: 'Déconnexion' }));
+    $('#who').replaceChildren(
+      ACCESS.superadmin ? h('a', { class: 'linkbtn', href: ROOT + 'admin/participants/', text: 'Base nationale' }) : '',
+      ACCESS.superadmin ? ' · ' : '',
+      s.data.session.user.email + ' · ', h('button', { class: 'linkbtn', type: 'button', onclick: logout, text: 'Déconnexion' }));
     return true;
   }
   async function logout() { await sb.auth.signOut(); location.reload(); }
@@ -75,11 +80,13 @@
   var state = { event: null, status: 'pending' };
   async function dashboard() {
     if (!(await requireAdmin())) return;
-    var evs = await sb.from('events').select('id, title, starts_at, slug').order('starts_at', { ascending: false });
+    var evq = sb.from('events').select('id, title, starts_at, slug, org_id, organizations(name)').order('starts_at', { ascending: false });
+    if (!ACCESS.superadmin) evq = evq.in('org_id', ACCESS.orgs.map(function (o) { return o.id; }));
+    var evs = await evq;
     if (evs.error || !evs.data.length) { app.replaceChildren(h('p', { class: 'note', text: 'Aucun événement.' })); return; }
     state.event = state.event || evs.data[0].id;
     var sel = h('select', { 'aria-label': 'Événement', onchange: function () { state.event = sel.value; render(); } },
-      evs.data.map(function (e) { return h('option', { value: e.id, selected: e.id === state.event, text: e.title + ' — ' + when(e.starts_at) }); }));
+      evs.data.map(function (e) { return h('option', { value: e.id, selected: e.id === state.event, text: (e.organizations ? e.organizations.name + ' · ' : '') + e.title + ' — ' + when(e.starts_at) }); }));
     var tabs = h('div', { class: 'tabs', role: 'tablist' }, [['pending', 'À vérifier'], ['paid', 'Payées'], ['rejected', 'Refusées']].map(function (t) {
       return h('button', { type: 'button', role: 'tab', 'aria-selected': String(state.status === t[0]), 'data-s': t[0], text: t[1], onclick: function () { state.status = t[0]; render(); } });
     }));
@@ -168,7 +175,7 @@
       var r = await sb.rpc('check_in', { p_code: code });
       busy = false;
       var d = r.data || { result: 'invalid' };
-      var map = { ok: ['ok', 'ENTRÉE VALIDÉE'], already: ['warn', 'DÉJÀ UTILISÉ'], invalid: ['bad', 'BILLET INVALIDE'] };
+      var map = { ok: ['ok', 'ENTRÉE VALIDÉE'], already: ['warn', 'DÉJÀ UTILISÉ'], invalid: ['bad', 'BILLET INVALIDE'], other_org: ['bad', 'BILLET D’UN AUTRE ORGANISATEUR'] };
       var m = map[d.result] || map.invalid;
       res.className = 'scan-res ' + m[0];
       res.replaceChildren(h('b', { text: m[1] }),
@@ -183,5 +190,46 @@
     }
   }
 
-  ({ admin: dashboard, scan: scanner }[PAGE] || function () {})();
+  /* ---------- Base nationale (super-admin BiZ) ---------- */
+  async function national() {
+    if (!(await requireAdmin())) return;
+    if (!ACCESS.superadmin) { app.replaceChildren(h('p', { class: 'note err', text: 'Réservé à l’équipe BiZ Media.' })); return; }
+    var st = await sb.rpc('national_stats');
+    if (st.error) { app.replaceChildren(h('p', { class: 'note err', text: st.error.message })); return; }
+    var d = st.data;
+    var search = h('input', { type: 'search', placeholder: 'Nom, téléphone ou ville…', 'aria-label': 'Rechercher' });
+    var onlyC = h('input', { type: 'checkbox' });
+    var list = h('div', { class: 'orders' });
+    app.replaceChildren(
+      h('a', { class: 'dark-link back', href: '../', text: '← Tableau de bord' }),
+      h('h1', { class: 'ev-title', text: 'Base nationale des participants' }),
+      h('div', { class: 'adm-stats' }, [['Personnes', d.people], ['Contactables (consentement BiZ)', d.contactable], ['Venues à 2 événements ou plus', d.multi_event], ['Clients différents', d.multi_org]].map(function (x) {
+        return h('div', null, [h('b', { text: String(x[1]) }), h('span', { text: x[0] })]);
+      })),
+      h('p', { class: 'note', text: 'Par client : ' + d.by_org.map(function (o) { return o.name + ' (' + o.people + ')'; }).join(' · ') }),
+      h('div', { class: 'adm-bar' }, [search, h('label', { class: 'consent' }, [onlyC, h('span', { text: 'Seulement les contactables' })])]),
+      list);
+    async function load() {
+      var q = sb.from('people').select('full_name, phone, email, city, consent_biz, first_seen, last_seen, orders(event_id)').order('last_seen', { ascending: false }).limit(200);
+      var term = search.value.trim();
+      if (term) q = q.or('full_name.ilike.%' + term.replace(/[%,()]/g, '') + '%,phone.ilike.%' + term.replace(/\D/g, '') + '%,city.ilike.%' + term.replace(/[%,()]/g, '') + '%');
+      if (onlyC.checked) q = q.eq('consent_biz', true);
+      var r = await q;
+      if (r.error) { list.replaceChildren(h('p', { class: 'note err', text: r.error.message })); return; }
+      if (!r.data.length) { list.replaceChildren(h('p', { class: 'note', text: 'Aucune personne.' })); return; }
+      list.replaceChildren.apply(list, r.data.map(function (p) {
+        var nEv = new Set((p.orders || []).map(function (o) { return o.event_id; })).size;
+        return h('article', { class: 'oc ' + (p.consent_biz ? 'oc-paid' : 'oc-rejected') }, [h('div', { class: 'oc-main' }, [
+          h('b', { class: 'oc-name', text: p.full_name }),
+          h('span', { text: p.phone + (p.email ? ' · ' + p.email : '') + (p.city ? ' · ' + p.city : '') }),
+          h('span', { class: 'oc-meta', text: nEv + ' événement(s) · vu le ' + when(p.last_seen) + ' · ' + (p.consent_biz ? 'contactable' : 'ne pas contacter') })
+        ])]);
+      }));
+    }
+    var tmr; search.addEventListener('input', function () { clearTimeout(tmr); tmr = setTimeout(load, 300); });
+    onlyC.addEventListener('change', load);
+    load();
+  }
+
+  ({ admin: dashboard, scan: scanner, people: national }[PAGE] || function () {})();
 })();

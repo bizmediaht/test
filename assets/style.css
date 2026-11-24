@@ -421,3 +421,8 @@ footer .note{flex-basis:100%;font-size:12px;color:#94A3B8}
 .hbars:has(.hb.sm){gap:14px;padding:8px 0 4px}
 .hb.sm .hb-track{height:14px}
 .hb.sm .hb-v{font-size:18px}
+.consent{flex:none;flex-direction:row;align-items:flex-start;gap:10px;font-weight:500;font-size:14px;line-height:1.45;color:#334155;cursor:pointer}
+.consent input{width:20px;height:20px;padding:0;margin-top:1px;accent-color:var(--navy);flex-shrink:0}
+.organizer{margin:0;font-weight:700;color:var(--gold-d)!important}
+.linkbtn.dark{color:var(--slate);text-decoration:underline;align-self:flex-start}
+.adm-bar input[type=search]{flex:1 1 280px}

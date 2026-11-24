@@ -18,7 +18,10 @@
       chooseType: 'Type de billet', qty: 'Nombre de billets', total: 'Total à payer',
       payTitle: 'Comment payer', payStep1: function (amt, m, num) { return 'Envoyez ' + amt + ' par ' + m + ' au ' + num + '.'; },
       payStep2: 'Notez le numéro de transaction reçu par SMS.', payStep3: 'Remplissez le formulaire ci-dessous. Nous vérifions votre paiement et vous envoyons vos billets sur WhatsApp.',
-      name: 'Nom complet', phone: 'Numéro WhatsApp', method: 'Paiement envoyé par', ref: 'Numéro de transaction', proof: 'Capture d’écran du paiement (facultatif)',
+      name: 'Nom complet', phone: 'Numéro WhatsApp', email: 'E-mail (facultatif)',
+      cEvent: function (o) { return 'J’accepte que ' + o + ' utilise mes informations pour gérer ma participation à cet événement.'; },
+      cBiz: 'J’accepte que BiZ Media me contacte pour d’autres événements et opportunités (facultatif).',
+      organizer: 'Organisé par ', withdraw: 'Ne plus être contacté par BiZ Media', withdrawn: 'C’est noté : BiZ Media ne vous contactera plus.', method: 'Paiement envoyé par', ref: 'Numéro de transaction', proof: 'Capture d’écran du paiement (facultatif)',
       submit: 'Envoyer ma commande', sending: 'Envoi en cours…', notFound: 'Événement introuvable.', back: '← Tous les événements',
       errGeneric: 'Une erreur est survenue. Réessayez ou écrivez-nous sur WhatsApp.', soldOut: 'Complet',
       orderPending: 'Commande reçue — paiement en cours de vérification',
@@ -36,7 +39,10 @@
       chooseType: 'Ticket type', qty: 'Number of tickets', total: 'Total to pay',
       payTitle: 'How to pay', payStep1: function (amt, m, num) { return 'Send ' + amt + ' via ' + m + ' to ' + num + '.'; },
       payStep2: 'Note the transaction number you receive by SMS.', payStep3: 'Fill in the form below. We check your payment and send your tickets on WhatsApp.',
-      name: 'Full name', phone: 'WhatsApp number', method: 'Payment sent with', ref: 'Transaction number', proof: 'Payment screenshot (optional)',
+      name: 'Full name', phone: 'WhatsApp number', email: 'Email (optional)',
+      cEvent: function (o) { return 'I agree that ' + o + ' may use my information to manage my attendance at this event.'; },
+      cBiz: 'I agree that BiZ Media may contact me about other events and opportunities (optional).',
+      organizer: 'Organized by ', withdraw: 'Stop BiZ Media from contacting me', withdrawn: 'Done: BiZ Media will no longer contact you.', method: 'Payment sent with', ref: 'Transaction number', proof: 'Payment screenshot (optional)',
       submit: 'Send my order', sending: 'Sending…', notFound: 'Event not found.', back: '← All events',
       errGeneric: 'Something went wrong. Try again or message us on WhatsApp.', soldOut: 'Sold out',
       orderPending: 'Order received — payment being checked',
@@ -77,13 +83,13 @@
     return wrap;
   }
   function msg(el, text, kind) { el.replaceChildren(h('p', { class: 'note ' + (kind || ''), text: text })); }
-  function errText(e) { var m = (e && (e.message || e.error_description)) || ''; return /places|Quantité|introuvable|invalide|seats/i.test(m) ? m : L.errGeneric; }
+  function errText(e) { var m = (e && (e.message || e.error_description)) || ''; return /places|Quantité|introuvable|invalide|Consentement|seats/i.test(m) ? m : L.errGeneric; }
 
   /* ---------- Liste + achat ---------- */
   async function pageShop() {
     var app = $('#app'); msg(app, L.loading);
     var slug = param('e');
-    var q = sb.from('events').select('id, slug, title, description, venue, starts_at, payment_number, payment_methods, ticket_types(id, name, description, price_htg, sort)').eq('is_published', true).order('starts_at');
+    var q = sb.from('events').select('id, slug, title, description, venue, starts_at, payment_number, payment_methods, organizations(name, logo_url), ticket_types(id, name, description, price_htg, sort)').eq('is_published', true).order('starts_at');
     var res = slug ? await q.eq('slug', slug) : await q;
     if (res.error) return msg(app, L.errGeneric, 'err');
     if (!slug) {
@@ -106,6 +112,7 @@
     var left = {}; (av.data || []).forEach(function (r) { left[r.ticket_type_id] = r.seats_left; });
     var types = ev.ticket_types.slice().sort(function (a, b) { return a.sort - b.sort; });
     var methods = ev.payment_methods.split(/\s*,\s*/);
+    var org = (ev.organizations && ev.organizations.name) || 'BiZ Media';
 
     var totalEl = h('b', { class: 'total' });
     var step1 = h('li');
@@ -138,6 +145,9 @@
         h('label', null, [L.ref, h('input', { name: 'ref', required: true, maxlength: 80 })])
       ]),
       h('label', null, [L.proof, h('input', { name: 'proof', type: 'file', accept: 'image/*' })]),
+      h('label', null, [L.email, h('input', { name: 'email', type: 'email', autocomplete: 'email', maxlength: 160 })]),
+      h('label', { class: 'consent' }, [h('input', { type: 'checkbox', name: 'cEvent', required: true }), h('span', { text: L.cEvent(org) })]),
+      h('label', { class: 'consent' }, [h('input', { type: 'checkbox', name: 'cBiz' }), h('span', { text: L.cBiz })]),
       h('button', { class: 'btn btn-gold', type: 'submit', text: L.submit }), status
     ]);
     form.addEventListener('submit', async function (e) {
@@ -155,7 +165,8 @@
         }
         var r = await sb.rpc('create_order', {
           p_ticket_type: sel.value, p_quantity: Number(qty.value), p_name: form.name.value, p_phone: form.phone.value,
-          p_method: form.method.value, p_ref: form.ref.value, p_proof_path: proofPath
+          p_method: form.method.value, p_ref: form.ref.value, p_proof_path: proofPath,
+          p_email: form.email.value || null, p_consent_event: form.cEvent.checked, p_consent_biz: form.cBiz.checked, p_answers: {}
         });
         if (r.error) throw r.error;
         location.href = url((EN ? 'en/tickets/order/' : 'billetterie/commande/') + '?t=' + r.data);
@@ -172,6 +183,7 @@
           h('span', { class: 'eyebrow', text: when(ev.starts_at) }),
           h('h1', { class: 'ev-title', text: ev.title }),
           h('p', { class: 'lead', text: ev.venue || '' }),
+          h('p', { class: 'organizer', text: L.organizer + org }),
           ev.description ? h('p', { text: ev.description }) : null
         ]),
         h('div', { class: 'shop-buy' }, [
@@ -217,6 +229,13 @@
         var link = url((EN ? 'en/ticket/' : 'billet/') + '?c=' + code);
         return h('a', { class: 'tk-mini', href: link }, [qr(link, 160), h('b', { text: code }), h('span', { text: L.openTicket + ' →' })]);
       })));
+    }
+    if (o.consent_biz) {
+      var wd = h('button', { class: 'linkbtn dark', type: 'button', text: L.withdraw, onclick: async function () {
+        var r2 = await sb.rpc('withdraw_consent', { p_token: t });
+        if (!r2.error) wd.replaceWith(h('p', { class: 'note', text: L.withdrawn }));
+      } });
+      kids.push(wd);
     }
     app.replaceChildren(h('div', { class: 'panel' }, kids));
   }
