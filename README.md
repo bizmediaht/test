@@ -1,6 +1,6 @@
-# BiZ Media — site web
+# BiZ Insider — site web
 
-Site vitrine bilingue (FR / EN) de **BiZ Media** — *Stories That Connect. Solutions That Work.*
+Site vitrine bilingue (FR / EN) de **BiZ Insider** — *Stories That Connect. Solutions That Work.*
 
 | Page | Français | English |
 |---|---|---|
@@ -25,14 +25,15 @@ python3 build.py
 ## Mise en ligne
 
 Hébergé avec GitHub Pages (branche `main`, dossier racine).
-Pour le domaine `bizmedia.ht` : ajouter un fichier `CNAME` contenant `bizmedia.ht`
+Pour le domaine `bizinsiderht.com` : ajouter un fichier `CNAME` contenant `bizinsiderht.com`,
+remplacer `SITE_URL` dans `build.py` par `https://bizinsiderht.com`, relancer `python3 build.py`
 et configurer le DNS chez le registrar.
 
 ## Billetterie
 
 Paiement MonCash / NatCash envoyé par le client, vérifié à la main, puis billet avec QR code.
 
-- Base de données : projet Supabase **BiZ Media** (`sljzkbcpkecpvvpzskxa`)
+- Base de données : projet Supabase « BiZ Media » (ancien nom du projet, inchangé) (`sljzkbcpkecpvvpzskxa`)
 - `billetterie/?e=<slug>` : achat d'un billet · `billetterie/commande/?t=<jeton>` : suivi de commande · `billet/?c=<code>` : billet
 - `admin/` : validation des paiements et envoi des billets sur WhatsApp · `admin/scan/` : scanner à l'entrée
 - Les événements et types de billets se créent dans Supabase (tables `events`, `ticket_types`).
@@ -42,8 +43,8 @@ Paiement MonCash / NatCash envoyé par le client, vérifié à la main, puis bil
 
 - `organizations` : un client (ex. Cap Talent Lab). Chaque événement appartient à un client (`events.org_id`).
 - `org_members` : e-mails qui ont accès à l'espace d'un client (`owner` ou `staff`). Ils ne voient que les événements, commandes et billets de leur client.
-- `admins` : équipe BiZ Media (super-admin) — voit tous les clients et la base nationale (`admin/participants/`).
+- `admins` : équipe BiZ Insider (super-admin) — voit tous les clients et la base nationale (`admin/participants/`).
 - `people` : une fiche par numéro de téléphone (format +509…), partagée entre tous les clients.
-  `consent_biz` = la personne a coché « BiZ Media peut me contacter ». Seules ces personnes peuvent être contactées par BiZ.
+  `consent_biz` = la personne a coché « BiZ Insider peut me contacter ». Seules ces personnes peuvent être contactées par BiZ.
 - Le formulaire impose le consentement pour l'événement ; le consentement BiZ est facultatif et décoché par défaut.
   La page de commande permet de retirer ce consentement.

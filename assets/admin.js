@@ -1,4 +1,4 @@
-/* BiZ Media — Administration de la billetterie : validation des paiements et pointage */
+/* BiZ Insider — Administration de la billetterie : validation des paiements et pointage */
 (function () {
   'use strict';
   var SUPABASE_URL = 'https://sljzkbcpkecpvvpzskxa.supabase.co';
@@ -26,7 +26,7 @@
     return 'Bonjour ' + o.buyer_name + ', votre paiement est confirmé ✅\n' +
       'Voici vos billets pour ' + o.events.title + ' (' + when(o.events.starts_at) + ') :\n' +
       codes.map(function (c) { return url('billet/?c=' + c); }).join('\n') +
-      '\nPrésentez le QR code à l’entrée. — BiZ Media';
+      '\nPrésentez le QR code à l’entrée. — BiZ Insider';
   }
   var app = $('#app');
   var ACCESS = null;
@@ -40,7 +40,7 @@
     if (!(ACCESS.superadmin || ACCESS.orgs.length)) {
       app.replaceChildren(h('div', { class: 'panel' }, [
         h('h1', { class: 'ev-title', text: 'Compte non autorisé' }),
-        h('p', { class: 'lead', text: 'Le compte ' + s.data.session.user.email + ' n’est pas encore administrateur. Demandez à BiZ Media de l’ajouter.' }),
+        h('p', { class: 'lead', text: 'Le compte ' + s.data.session.user.email + ' n’est pas encore administrateur. Demandez à BiZ Insider de l’ajouter.' }),
         h('button', { class: 'btn btn-navy', type: 'button', onclick: logout, text: 'Se déconnecter' })
       ]));
       return false;
@@ -285,7 +285,7 @@
   /* ---------- Base nationale (super-admin BiZ) ---------- */
   async function national() {
     if (!(await requireAdmin())) return;
-    if (!ACCESS.superadmin) { app.replaceChildren(h('p', { class: 'note err', text: 'Réservé à l’équipe BiZ Media.' })); return; }
+    if (!ACCESS.superadmin) { app.replaceChildren(h('p', { class: 'note err', text: 'Réservé à l’équipe BiZ Insider.' })); return; }
     var st = await sb.rpc('national_stats');
     if (st.error) { app.replaceChildren(h('p', { class: 'note err', text: st.error.message })); return; }
     var d = st.data;

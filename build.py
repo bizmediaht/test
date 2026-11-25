@@ -6,9 +6,11 @@ from html import escape
 from pathlib import Path
 from proof_data import proof_html
 
-SITE_URL = "https://bizmedia.ht"
+# Adresse publique actuelle du site. À remplacer par https://bizinsiderht.com quand le domaine sera connecté.
+SITE_URL = "https://bizmediaht.github.io/test"
+DOMAIN = "bizinsiderht.com"   # affiché dans le pied de page
 CONTACT = {
-    "email": "",                       # TODO : adresse e-mail (vide = non affichée)
+    "email": "office@bizinsiderht.com",
     "whatsapp": "50949012257",         # numéro WhatsApp au format international, sans +
     "phone_display": "+509 4901-2257",
 }
@@ -40,8 +42,8 @@ T = {
     nav=dict(services="Services", packages="Forfaits", work="Réalisations", about="À propos", tickets="Billetterie", quote="Demander un devis"),
     footerLinks="Pages", illus="Photos et vidéo : images d’illustration.",
     # ---------- Accueil ----------
-    homeTitle="BiZ Media — Photo, vidéo, production & solutions digitales en Haïti",
-    homeDesc="BiZ Media : photographie, vidéo, production, CRM et automatisation pour les entreprises et les événements en Haïti.",
+    homeTitle="BiZ Insider — Photo, vidéo, production & solutions digitales en Haïti",
+    homeDesc="BiZ Insider : photographie, vidéo, production, CRM et automatisation pour les entreprises et les événements en Haïti.",
     heroText="Photo, vidéo, production et systèmes digitaux — CRM, inscriptions, automatisation — réunis sous un même toit pour les entreprises et les événements en Haïti.",
     heroCta1="Parlons de votre projet", heroCta2="Voir les forfaits",
     heroPhoto="[ Photo ou vidéo d’un événement couvert par BiZ ]",
@@ -72,9 +74,9 @@ T = {
     phoneFallback="[Téléphone / WhatsApp]", city="Haïti",
     fName="Nom complet", fCompany="Entreprise", fPhone="Téléphone", fService="Service souhaité", fProject="Votre projet", fSend="Envoyer la demande",
     options=["Pack Événement Complet", "Pack Événement Essentiel", "Couverture Média", "Contenu mensuel", "BiZ Digital — CRM / Automatisation", "Autre / sur mesure"],
-    msgIntro="Bonjour BiZ Media, je souhaite un devis.", msgSubject="Demande de devis — site web",
+    msgIntro="Bonjour BiZ Insider, je souhaite un devis.", msgSubject="Demande de devis — site web",
     # ---------- Forfaits ----------
-    pkTitle="Forfaits — BiZ Media", pkDesc="Les forfaits BiZ Media : événements, couverture photo & vidéo, contenu mensuel et solutions digitales.",
+    pkTitle="Forfaits — BiZ Insider", pkDesc="Les forfaits BiZ Insider : événements, couverture photo & vidéo, contenu mensuel et solutions digitales.",
     pkEyebrow="Forfaits", pkH1="Des offres claires pour chaque projet.",
     pkLead="Choisissez une base, nous l’adaptons à votre événement ou à votre entreprise. Chaque projet commence par un appel gratuit.",
     pkPopular="Le plus demandé", pkFrom="À partir de", pkQuote="Sur devis", pkCta="Choisir ce forfait",
@@ -103,11 +105,11 @@ T = {
         ("Le système d’inscription fonctionne-t-il avec WhatsApp ?", "Oui. Les confirmations et les relances peuvent être envoyées par WhatsApp, et chaque participant est suivi dans le CRM."),
     ],
     # ---------- Réalisations ----------
-    wkTitle="Réalisations — BiZ Media", wkDesc="Projets réalisés par BiZ Media : étude de cas Bwat Sekrèm Talks et galerie.",
+    wkTitle="Réalisations — BiZ Insider", wkDesc="Projets réalisés par BiZ Insider : étude de cas Bwat Sekrèm Talks et galerie.",
     wkEyebrow="Réalisations", wkH1="Des projets qui parlent pour nous.",
     wkLead="Chaque projet combine ce que nous faisons de mieux : raconter l’histoire et faire fonctionner le système.",
     csEyebrow="Étude de cas", csClient="Client", csClientV="Bwat Sekrèm", csType="Type", csTypeV="Conférence / événement public",
-    csServices="Services", csServicesV="BiZ Digital · BiZ Media",
+    csServices="Services", csServicesV="Système digital · Couverture média",
     csChallengeT="Le défi", csChallenge="Gérer des centaines d’inscriptions, confirmer chaque participant, gérer une liste d’attente et savoir exactement qui est venu le jour de l’événement.",
     csSolutionT="La solution",
     csSolution=["Formulaire d’inscription public", "Confirmations, relances et messages d’attente automatiques", "CRM avec un responsable et des notes pour chaque personne", "Pointage des présences à l’entrée", "Envoi des certificats après l’événement"],
@@ -115,12 +117,12 @@ T = {
     galleryTitle="Galerie", galleryPh="[ Photo ]",
     moreTitle="Votre projet pourrait être le prochain.", moreCta="Parlons-en",
     # ---------- À propos ----------
-    abTitle="À propos — BiZ Media", abDesc="BiZ Media réunit média, technologie et business pour les entreprises et les événements en Haïti.",
+    abTitle="À propos — BiZ Insider", abDesc="BiZ Insider réunit média, technologie et business pour les entreprises et les événements en Haïti.",
     abEyebrow="À propos", abH1="Média, technologie et business, sous un même toit.",
-    abLead="BiZ Media est né d’un constat simple : un événement réussi a besoin d’une belle histoire et d’un système qui fonctionne. Rarement les deux chez le même prestataire.",
+    abLead="BiZ Insider est né d’un constat simple : un événement réussi a besoin d’une belle histoire et d’un système qui fonctionne. Rarement les deux chez le même prestataire.",
     storyTitle="Notre histoire",
-    story=["Avant BiZ Media, nous avons conçu et opéré le système complet de Bwat Sekrèm Talks : inscriptions, confirmations automatiques, CRM, pointage et certificats.",
-           "Après cet événement, plusieurs entreprises nous ont demandé la même chose. BiZ Media est la réponse : une équipe qui couvre votre événement en photo et en vidéo, et qui construit les outils digitaux qui vont avec."],
+    story=["Avant BiZ Insider, nous avons conçu et opéré le système complet de Bwat Sekrèm Talks : inscriptions, confirmations automatiques, CRM, pointage et certificats.",
+           "Après cet événement, plusieurs entreprises nous ont demandé la même chose. BiZ Insider est la réponse : une équipe qui couvre votre événement en photo et en vidéo, et qui construit les outils digitaux qui vont avec."],
     valuesTitle="Ce qui nous guide",
     values=[("Fiabilité", "Un système qui marche le jour J, sans surprise."), ("Clarté", "Des offres et des prix compréhensibles."),
             ("Qualité", "Des images et des outils dont vous serez fiers."), ("Proximité", "Une équipe locale qui connaît le terrain.")],
@@ -133,8 +135,8 @@ T = {
     htmllang="en", skip="Skip to content", navLabel="Main navigation", langLabel="Language",
     nav=dict(services="Services", packages="Packages", work="Our Work", about="About", tickets="Tickets", quote="Get a quote"),
     footerLinks="Pages", illus="Photos and video: illustrative images.",
-    homeTitle="BiZ Media — Photo, video, production & digital solutions in Haiti",
-    homeDesc="BiZ Media: photography, video, production, CRM and automation for businesses and events in Haiti.",
+    homeTitle="BiZ Insider — Photo, video, production & digital solutions in Haiti",
+    homeDesc="BiZ Insider: photography, video, production, CRM and automation for businesses and events in Haiti.",
     heroText="Photo, video, production and digital systems — CRM, registrations, automation — all under one roof for businesses and events in Haiti.",
     heroCta1="Let’s talk about your project", heroCta2="See our packages",
     heroPhoto="[ Photo or video of an event covered by BiZ ]",
@@ -165,8 +167,8 @@ T = {
     phoneFallback="[Phone / WhatsApp]", city="Haiti",
     fName="Full name", fCompany="Company", fPhone="Phone", fService="Service needed", fProject="Your project", fSend="Send request",
     options=["Complete Event Package", "Essential Event Package", "Media Coverage", "Monthly Content", "BiZ Digital — CRM / Automation", "Other / custom"],
-    msgIntro="Hello BiZ Media, I would like a quote.", msgSubject="Quote request — website",
-    pkTitle="Packages — BiZ Media", pkDesc="BiZ Media packages: events, photo & video coverage, monthly content and digital solutions.",
+    msgIntro="Hello BiZ Insider, I would like a quote.", msgSubject="Quote request — website",
+    pkTitle="Packages — BiZ Insider", pkDesc="BiZ Insider packages: events, photo & video coverage, monthly content and digital solutions.",
     pkEyebrow="Packages", pkH1="Clear offers for every project.",
     pkLead="Pick a starting point and we tailor it to your event or business. Every project starts with a free call.",
     pkPopular="Most requested", pkFrom="From", pkQuote="On request", pkCta="Choose this package",
@@ -194,23 +196,23 @@ T = {
         ("Do you work outside Port-au-Prince?", "[To complete: areas covered and travel fees.]"),
         ("Does the registration system work with WhatsApp?", "Yes. Confirmations and reminders can be sent via WhatsApp, and every attendee is tracked in the CRM."),
     ],
-    wkTitle="Our Work — BiZ Media", wkDesc="Projects by BiZ Media: Bwat Sekrèm Talks case study and gallery.",
+    wkTitle="Our Work — BiZ Insider", wkDesc="Projects by BiZ Insider: Bwat Sekrèm Talks case study and gallery.",
     wkEyebrow="Our work", wkH1="Projects that speak for us.",
     wkLead="Every project combines what we do best: telling the story and making the system work.",
     csEyebrow="Case study", csClient="Client", csClientV="Bwat Sekrèm", csType="Type", csTypeV="Conference / public event",
-    csServices="Services", csServicesV="BiZ Digital · BiZ Media",
+    csServices="Services", csServicesV="Digital system · Media coverage",
     csChallengeT="The challenge", csChallenge="Handle hundreds of registrations, confirm every attendee, manage a waitlist and know exactly who showed up on the day.",
     csSolutionT="The solution",
     csSolution=["Public registration form", "Automatic confirmations, reminders and waitlist messages", "CRM with an owner and notes for every person", "Attendance check-in at the door", "Certificates sent after the event"],
     csResultsT="The results",
     galleryTitle="Gallery", galleryPh="[ Photo ]",
     moreTitle="Your project could be next.", moreCta="Let’s talk",
-    abTitle="About — BiZ Media", abDesc="BiZ Media brings media, technology and business together for companies and events in Haiti.",
+    abTitle="About — BiZ Insider", abDesc="BiZ Insider brings media, technology and business together for companies and events in Haiti.",
     abEyebrow="About", abH1="Media, technology and business, under one roof.",
-    abLead="BiZ Media started from a simple observation: a successful event needs a great story and a system that works. Rarely from the same provider.",
+    abLead="BiZ Insider started from a simple observation: a successful event needs a great story and a system that works. Rarely from the same provider.",
     storyTitle="Our story",
-    story=["Before BiZ Media, we designed and ran the full system behind Bwat Sekrèm Talks: registrations, automatic confirmations, CRM, check-in and certificates.",
-           "After that event, several companies asked us for the same thing. BiZ Media is the answer: one team that covers your event in photo and video, and builds the digital tools that go with it."],
+    story=["Before BiZ Insider, we designed and ran the full system behind Bwat Sekrèm Talks: registrations, automatic confirmations, CRM, check-in and certificates.",
+           "After that event, several companies asked us for the same thing. BiZ Insider is the answer: one team that covers your event in photo and video, and builds the digital tools that go with it."],
     valuesTitle="What guides us",
     values=[("Reliability", "A system that works on the day, no surprises."), ("Clarity", "Offers and prices that are easy to understand."),
             ("Quality", "Images and tools you’ll be proud of."), ("Proximity", "A local team that knows the ground.")],
@@ -291,9 +293,9 @@ def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False, a
 <a class="skip" href="#main">{e(t["skip"])}</a>
 <header>
 <div class="wrap nav">
-<a class="brand" href="{rel(me, PAGES["home"][lang])}" aria-label="BiZ Media">
+<a class="brand" href="{rel(me, PAGES["home"][lang])}" aria-label="BiZ Insider">
 <span class="biz" aria-hidden="true"><span>B</span><span class="i"><span class="dot"></span><span class="stem"></span></span><span>Z</span></span>
-<span class="sep" aria-hidden="true"></span><span class="media" aria-hidden="true">MEDIA</span>
+<span class="sep" aria-hidden="true"></span><span class="media" aria-hidden="true">INSIDER</span>
 </a>
 <nav aria-label="{e(t["navLabel"])}">
 {nl("home", n["services"], "#services")}
@@ -313,7 +315,7 @@ def layout(lang, key, title, desc, body, page=None, scripts=(), noindex=False, a
 {body}
 </main>
 {"".join(f'<script src="{src if src.startswith("http") else root + v(src)}"></script>' for src in scripts)}
-<footer><div class="wrap"><span class="t">BiZ Media · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Media — bizmedia.ht</span></div></footer>
+<footer><div class="wrap"><span class="t">BiZ Insider · Stories That Connect. Solutions That Work.</span><span class="c fl">{footer_links}</span><span class="c">© <span id="y">2026</span> BiZ Insider — {DOMAIN}</span></div></footer>
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
 if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.querySelectorAll('video[autoplay]').forEach(function(v){{v.pause();v.removeAttribute('autoplay')}});
@@ -352,7 +354,7 @@ HOME = {
          "zéro participant oublié.", "des images dont vous serez fiers."],
     lead="Inscriptions en ligne, billetterie MonCash / NatCash, confirmations WhatsApp, pointage à l’entrée, couverture photo & vidéo et rapport final. Une seule équipe s’occupe de tout, avant, pendant et après.",
     ctaWa="Écrivez-nous sur WhatsApp", ctaForm="Demander un devis", ctaHow="Voir comment ça marche",
-    reel="[ Showreel vidéo 30–60 s ]", reelLabel="Showreel BiZ Media", fWa="Inscription confirmée", fWaSub="Envoyé sur WhatsApp", fLive="présents", fLiveSub="en direct", fTk="Billet validé", fTkSub="VIP · Entrée 1",
+    reel="[ Showreel vidéo 30–60 s ]", reelLabel="Showreel BiZ Insider", fWa="Inscription confirmée", fWaSub="Envoyé sur WhatsApp", fLive="présents", fLiveSub="en direct", fTk="Billet validé", fTkSub="VIP · Entrée 1",
     trust="Système déjà utilisé pour Bwat Sekrèm Talks",
     trustStats=[("374", "inscrits"), ("188", "présents pointés"), ("675", "messages envoyés")],
     howEyebrow="Comment ça marche", howTitle="Vous organisez. Nous gérons le reste.",
@@ -398,7 +400,7 @@ HOME = {
          "no attendee left behind.", "images you’ll be proud of."],
     lead="Online registration, MonCash / NatCash ticketing, WhatsApp confirmations, check-in at the door, photo & video coverage and a final report. One team handles it all, before, during and after.",
     ctaWa="Message us on WhatsApp", ctaForm="Get a quote", ctaHow="See how it works",
-    reel="[ Video showreel 30–60 s ]", reelLabel="BiZ Media showreel", fWa="Registration confirmed", fWaSub="Sent on WhatsApp", fLive="checked in", fLiveSub="live", fTk="Ticket validated", fTkSub="VIP · Door 1",
+    reel="[ Video showreel 30–60 s ]", reelLabel="BiZ Insider showreel", fWa="Registration confirmed", fWaSub="Sent on WhatsApp", fLive="checked in", fLiveSub="live", fTk="Ticket validated", fTkSub="VIP · Door 1",
     trust="System already used for Bwat Sekrèm Talks",
     trustStats=[("374", "registered"), ("188", "checked in"), ("675", "messages sent")],
     howEyebrow="How it works", howTitle="You host. We handle the rest.",
@@ -668,14 +670,14 @@ QR_JS = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"
 SCAN_JS = "https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"
 
 TK = {
-    "fr": dict(shopT="Billetterie — BiZ Media", shopD="Achetez vos billets d’événements avec MonCash ou NatCash. Billet avec QR code envoyé sur WhatsApp.",
+    "fr": dict(shopT="Billetterie — BiZ Insider", shopD="Achetez vos billets d’événements avec MonCash ou NatCash. Billet avec QR code envoyé sur WhatsApp.",
                shopEy="Billetterie", shopH1="Vos billets, payés par MonCash ou NatCash.",
                shopLead="Choisissez votre billet, envoyez le paiement, recevez votre QR code sur WhatsApp.",
-               orderT="Ma commande — BiZ Media", ticketT="Mon billet — BiZ Media", noscript="Activez JavaScript pour utiliser la billetterie."),
-    "en": dict(shopT="Tickets — BiZ Media", shopD="Buy event tickets with MonCash or NatCash. QR-code ticket sent on WhatsApp.",
+               orderT="Ma commande — BiZ Insider", ticketT="Mon billet — BiZ Insider", noscript="Activez JavaScript pour utiliser la billetterie."),
+    "en": dict(shopT="Tickets — BiZ Insider", shopD="Buy event tickets with MonCash or NatCash. QR-code ticket sent on WhatsApp.",
                shopEy="Tickets", shopH1="Your tickets, paid with MonCash or NatCash.",
                shopLead="Pick your ticket, send the payment, get your QR code on WhatsApp.",
-               orderT="My order — BiZ Media", ticketT="My ticket — BiZ Media", noscript="Enable JavaScript to use ticketing."),
+               orderT="My order — BiZ Insider", ticketT="My ticket — BiZ Insider", noscript="Enable JavaScript to use ticketing."),
 }
 
 def app_shell(lang, key, title, desc, page, hero=None, scripts=(SB_JS, QR_JS, "assets/billetterie.js"), noindex=False):
@@ -705,14 +707,14 @@ def admin_page(depth, page, title):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>{e(title)} — BiZ Media</title>
+<title>{e(title)} — BiZ Insider</title>
 <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="{root}{v("assets/style.css")}">
 </head>
 <body data-page="{page}" data-root="{root}" class="adm">
 <header><div class="wrap nav">
-<a class="brand" href="{root}admin/" aria-label="BiZ Media — administration">
+<a class="brand" href="{root}admin/" aria-label="BiZ Insider — administration">
 <span class="biz" aria-hidden="true"><span>B</span><span class="i"><span class="dot"></span><span class="stem"></span></span><span>Z</span></span>
 <span class="sep" aria-hidden="true"></span><span class="media" aria-hidden="true">BILLETTERIE</span></a>
 <span id="who" class="who"></span>
@@ -729,9 +731,9 @@ def admin_page(depth, page, title):
 CLIENTS = {
     "cap-talent-lab": dict(name="Cap Talent Lab", color="#09346D", accent="#F2682A", logo="assets/clients/cap-talent-lab.jpg",
         fr=dict(tag="Salon de l’emploi du Cap-Haïtien", lead="Une plateforme de connexion entre talents et entreprises.",
-                ev="Prochaines éditions", with_="Inscriptions et billetterie propulsées par BiZ Media"),
+                ev="Prochaines éditions", with_="Inscriptions et billetterie propulsées par BiZ Insider"),
         en=dict(tag="Cap-Haïtien job fair", lead="A platform connecting talent and companies.",
-                ev="Upcoming editions", with_="Registration and ticketing powered by BiZ Media")),
+                ev="Upcoming editions", with_="Registration and ticketing powered by BiZ Insider")),
 }
 
 def client_page(slug):
